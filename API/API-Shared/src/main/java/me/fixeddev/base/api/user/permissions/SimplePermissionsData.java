@@ -3,6 +3,7 @@ package me.fixeddev.base.api.user.permissions;
 import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -18,14 +19,14 @@ public class SimplePermissionsData extends AbstractPermissionsData {
     private Map<String, List<Permission>> permissionsList;
     private List<Group> parents;
 
-    public SimplePermissionsData(UUID id, List<Group> parents) {
-        this(id.toString(), parents);
+    public SimplePermissionsData(UUID id) {
+        this(id.toString());
     }
 
-    public SimplePermissionsData(String id, List<Group> parents) {
+    public SimplePermissionsData(String id) {
         super(id);
 
-        this.parents = parents;
+        this.parents = new ArrayList<>();
         permissionsList = new ConcurrentHashMap<>();
     }
 
