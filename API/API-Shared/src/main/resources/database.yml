@@ -1,0 +1,8 @@
+redis:
+  host: localhost
+  port: 6379
+  password: ""
+mongo:
+  host: localhost
+  port: 27017
+  database: network
