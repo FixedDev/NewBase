@@ -1,10 +1,9 @@
 package me.fixeddev.base.api.user.permissions;
 
 import me.fixeddev.base.api.permissions.AbstractPermissible;
-import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -27,8 +26,8 @@ public abstract class AbstractPermissionsData extends AbstractPermissible implem
 
     @Override
     protected Stream<Permission> getParentPermissions() {
-        return getParents().stream()
-                .map(Group::getPermissions)
-                .flatMap(Collection::stream);
+        return getPrimaryGroupPermissions().stream();
     }
+
+    protected abstract List<Permission> getPrimaryGroupPermissions();
 }
