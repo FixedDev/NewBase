@@ -4,6 +4,7 @@ import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SimplePermissionsData extends AbstractPermissionsData {
 
     private Map<String, List<Permission>> permissionsList;
-    private List<Group> parents;
+    private String primaryGroup;
 
     public SimplePermissionsData(UUID id) {
         this(id.toString());
@@ -26,7 +27,6 @@ public class SimplePermissionsData extends AbstractPermissionsData {
     public SimplePermissionsData(String id) {
         super(id);
 
-        this.parents = new ArrayList<>();
         permissionsList = new ConcurrentHashMap<>();
     }
 
@@ -35,13 +35,36 @@ public class SimplePermissionsData extends AbstractPermissionsData {
         return permissionsList;
     }
 
-    @Override
-    public void setParents(List<Group> parents) {
-        this.parents = parents;
+    public void setPermissions(Collection<Permission> permissions){
+        for (Permission permission : permissions) {
+            setPermission(permission.getName(), permission);
+        }
+    }
+
+    public void setPermission(String key, Permission permission){
+        if(!permission.getName().equals(key)){
+            throw new IllegalArgumentException("The provided key isn't the same as the name permission!");
+        }
+
+        permissionsList.computeIfAbsent(key, k -> new ArrayList<>()).add(permission);
     }
 
     @Override
-    public List<Group> getParents() {
-        return parents;
+    public String getPrimaryGroup() {
+        return primaryGroup;
+    }
+
+    @Override
+    public void setPrimaryGroup(String group) {
+        if(group == null || group.trim().isEmpty()){
+            throw new IllegalArgumentException("You can't set a null group to an user");
+        }
+
+        this.primaryGroup = group;
+    }
+
+    @Override
+    protected List<Permission> getPrimaryGroupPermissions() {
+        return new ArrayList<>();
     }
 }
