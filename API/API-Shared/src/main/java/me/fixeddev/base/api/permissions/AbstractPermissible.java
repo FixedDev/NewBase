@@ -61,7 +61,7 @@ public abstract class AbstractPermissible implements Permissible {
     protected abstract Map<String, List<Permission>> getRawPermissionList();
 
     /**
-     * @return - A stream for the permissions of the parents for this permissible
+     * @return A stream for the permissions of the parents for this permissible
      *          Empty stream if this doesn't has any parent
      */
     protected abstract Stream<Permission> getParentPermissions();
