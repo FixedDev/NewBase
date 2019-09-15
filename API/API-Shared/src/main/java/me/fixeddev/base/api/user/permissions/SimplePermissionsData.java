@@ -1,52 +1,49 @@
 package me.fixeddev.base.api.user.permissions;
 
+import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Represents the permissions data retrieved for a user
  * This shouldn't keep being used as valid data for more than 2 minutes after
- * its retrieve time
+ * its calculation time
  */
-public class SimplePermissionsData extends AbstractPermissionsData {
+public class SimplePermissionsData extends AbstractPermissible implements PermissionsData {
+
+    private String id;
 
     private Map<String, List<Permission>> permissionsList;
     private String primaryGroup;
 
-    public SimplePermissionsData(UUID id) {
-        this(id.toString());
+    private LocalTime calculationTime = LocalTime.now();
+
+    SimplePermissionsData(UUID id, Group primaryGroup, Object subject) {
+        this(id.toString(), primaryGroup, subject);
     }
 
-    public SimplePermissionsData(String id) {
-        super(id);
+    SimplePermissionsData(String id, Group primaryGroup, Object subject) {
+        this.id = id;
+        this.primaryGroup = primaryGroup.getName();
 
         permissionsList = new ConcurrentHashMap<>();
+
+        Map<String, List<Permission>> groupPermissions = primaryGroup.getEffectivePermissions(subject).stream().collect(Collectors.groupingBy(Permission::getName));
+
+        permissionsList.putAll(groupPermissions);
     }
 
     @Override
-    protected Map<String, List<Permission>> getRawPermissionList() {
-        return permissionsList;
-    }
-
-    public void setPermissions(Collection<Permission> permissions){
-        for (Permission permission : permissions) {
-            setPermission(permission.getName(), permission);
-        }
-    }
-
-    public void setPermission(String key, Permission permission){
-        if(!permission.getName().equals(key)){
-            throw new IllegalArgumentException("The provided key isn't the same as the name permission!");
-        }
-
-        permissionsList.computeIfAbsent(key, k -> new ArrayList<>()).add(permission);
+    public String id() {
+        return id;
     }
 
     @Override
@@ -55,16 +52,19 @@ public class SimplePermissionsData extends AbstractPermissionsData {
     }
 
     @Override
-    public void setPrimaryGroup(String group) {
-        if(group == null || group.trim().isEmpty()){
-            throw new IllegalArgumentException("You can't set a null group to an user");
-        }
-
-        this.primaryGroup = group;
+    public LocalTime getCalculationTime() {
+        return calculationTime;
     }
 
     @Override
-    protected List<Permission> getPrimaryGroupPermissions() {
-        return new ArrayList<>();
+    protected Map<String, List<Permission>> getRawPermissionList() {
+        return permissionsList;
     }
+
+    @Override
+    protected Stream<Permission> getParentPermissions() {
+        return Stream.of();
+    }
+
+
 }
