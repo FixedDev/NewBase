@@ -8,7 +8,6 @@ import me.fixeddev.base.api.user.permissions.PermissionsData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -150,6 +149,8 @@ public class BaseUser implements User {
 
     @Override
     public void invalidatePermissionsData() {
+		asyncFieldsLock.lock();
         this.cachedPermissionsData = null;
+        asyncFieldsLock.unlock();
     }
 }
