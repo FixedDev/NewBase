@@ -20,6 +20,11 @@ public interface DataManagerBinder {
 
     <O extends SavableObject> void bindObjectRepository(Class<O> objectType, String dataPath);
 
+    /**
+     * Binds a {@link RedisCache} and it's corresponding {@link ObjectRepository}
+     */
+    <O extends SavableObject> void bindRedisCache(Class<O> objectType, String dataPath);
+
     static DataManagerBinder createBinder(Binder binder) {
         return new DataManagerBinderImpl(binder);
     }
@@ -57,6 +62,17 @@ public interface DataManagerBinder {
 
             binder.bind((TypeLiteral<ObjectRepository<O>>) TypeLiteral.get(Types.newParameterizedType(ObjectRepository.class, objectType)))
                     .toInstance(objectRepository);
+        }
+
+        @Override
+        public <O extends SavableObject> void bindRedisCache(Class<O> objectType, String dataPath) {
+            ObjectRepository<O> objectRepository = new MongoObjectRepository<>(objects.messager, objects.mongoService, objects.executorService, dataPath, objectType);
+            RedisCache<O> redisCache = new RedisCache<>(objectRepository, objects.redisService, dataPath);
+
+            binder.bind((TypeLiteral<ObjectRepository<O>>) TypeLiteral.get(Types.newParameterizedType(ObjectRepository.class, objectType)))
+                    .toInstance(objectRepository);
+            binder.bind((TypeLiteral<RedisCache<O>>) TypeLiteral.get(Types.newParameterizedType(RedisCache.class, objectType)))
+                    .toInstance(redisCache);
         }
 
 
