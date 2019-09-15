@@ -1,12 +1,21 @@
 package me.fixeddev.base.api.user;
 
 import com.google.common.collect.Iterables;
+import com.google.common.util.concurrent.ListenableFuture;
+import me.fixeddev.base.api.future.FutureUtils;
+import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.permissions.PermissionsData;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BaseUser implements User {
 
@@ -16,20 +25,32 @@ public class BaseUser implements User {
     private boolean globalChatVisible;
     private boolean staffChatVisibility;
 
-    private PermissionsData permissionsData;
+    private String primaryGroup;
+
+    private Lock asyncFieldsLock = new ReentrantLock();
+
+    // The cached version of the PermissionsData
+    @Nullable
+    private PermissionsData cachedPermissionsData;
 
     public BaseUser(UUID minecraftId,
                     List<String> nameHistory,
                     long lastSpeakTime,
                     boolean globalChatVisible,
-                    boolean staffChatVisibility,
-                    PermissionsData permissionsData) {
+                    boolean staffChatVisibility) {
         this.minecraftId = minecraftId;
         this.nameHistory = nameHistory;
         this.lastSpeakTime = lastSpeakTime;
         this.globalChatVisible = globalChatVisible;
         this.staffChatVisibility = staffChatVisibility;
-        this.permissionsData = permissionsData;
+    }
+
+    public BaseUser(UUID minecraftId) {
+        this.minecraftId = minecraftId;
+        nameHistory = new ArrayList<>();
+        lastSpeakTime = 0;
+        globalChatVisible = true;
+        staffChatVisibility = false;
     }
 
     @Override
@@ -96,8 +117,39 @@ public class BaseUser implements User {
     }
 
     @Override
-    public PermissionsData getPermissionsData() {
-        return permissionsData;
+    public String getPrimaryGroup() {
+        return primaryGroup;
     }
 
+    @Override
+    public void setPrimaryGroup(@NotNull String group) {
+        Objects.requireNonNull(group);
+
+        this.primaryGroup = group;
+    }
+
+    @Override
+    public Optional<PermissionsData> getPermissionData() {
+        return Optional.ofNullable(cachedPermissionsData);
+    }
+
+    @Override
+    public ListenableFuture<PermissionsData> calculatePermissionsData(@NotNull PermissionDataCalculator dataRetriever) {
+        Objects.requireNonNull(dataRetriever);
+
+        ListenableFuture<PermissionsData> futureData = dataRetriever.calculateForUser(this);
+
+        FutureUtils.addCallback(futureData, data -> {
+            asyncFieldsLock.lock();
+            cachedPermissionsData = data;
+            asyncFieldsLock.unlock();
+        });
+
+        return futureData;
+    }
+
+    @Override
+    public void invalidatePermissionsData() {
+        this.cachedPermissionsData = null;
+    }
 }
