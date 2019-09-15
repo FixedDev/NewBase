@@ -1,5 +1,6 @@
 package me.fixeddev.base.api.user.permissions;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
@@ -19,6 +20,7 @@ import java.util.stream.Stream;
  * This shouldn't keep being used as valid data for more than 2 minutes after
  * its calculation time
  */
+@JsonSerialize(as = PermissionsData.class)
 public class SimplePermissionsData extends AbstractPermissible implements PermissionsData {
 
     private String id;
