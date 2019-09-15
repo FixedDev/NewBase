@@ -1,5 +1,6 @@
 package me.fixeddev.base.api.user.permissions;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.fixeddev.base.api.permissions.Tristate;
 import me.fixeddev.base.api.permissions.permission.Permission;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,7 @@ import java.util.List;
  * Almost all the functionality is not available, only functionality like getPermissions and id return
  * a valid value
  */
+@JsonSerialize(as = PermissionsData.class)
 class PojoPermissionsData implements PermissionsData {
 
     private String id;
