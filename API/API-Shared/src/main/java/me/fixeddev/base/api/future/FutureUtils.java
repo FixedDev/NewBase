@@ -1,5 +1,6 @@
 package me.fixeddev.base.api.future;
 
+import com.google.common.util.concurrent.AsyncFunction;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
@@ -18,7 +19,16 @@ public class FutureUtils {
         return Futures.transform(future, transformFunction::apply, executor);
     }
 
-    public static <V, R> ListenableFuture<R> transform(ListenableFuture<V> future, Function<V, R> transformFunction) {
-        return Futures.transform(future, transformFunction::apply, Runnable::run);
+    public static <V, R> ListenableFuture<R> transformAsync(ListenableFuture<V> future, AsyncFunction<V, R> transformFunction, Executor executor) {
+        return Futures.transform(future, transformFunction, executor);
     }
+
+    public static <V, R> ListenableFuture<R> transform(ListenableFuture<V> future, Function<V, R> transformFunction) {
+        return transform(future, transformFunction, Runnable::run);
+    }
+
+    public static <V, R> ListenableFuture<R> transformAsync(ListenableFuture<V> future, AsyncFunction<V, R> transformFunction) {
+        return transformAsync(future, transformFunction, Runnable::run);
+    }
+
 }
