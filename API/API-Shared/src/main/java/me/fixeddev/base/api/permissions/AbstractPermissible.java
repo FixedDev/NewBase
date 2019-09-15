@@ -45,24 +45,22 @@ public abstract class AbstractPermissible implements Permissible {
     public List<Permission> getEffectivePermissions(Object subject) {
         ContextResolverRegistry resolverRegistry = ContextResolverRegistry.getInstance();
 
-        return getPermissionsAsStream()
+        return Stream.concat(getPermissionsAsStream(), getParentPermissions())
                 .filter(permission -> resolverRegistry.isApplicable(permission, subject))
                 .collect(Collectors.toList());
     }
 
     protected Stream<Permission> getPermissionsAsStream() {
-        Stream<Permission> groupPermissionsStream = getRawPermissionList().values()
+        return getRawPermissionList().values()
                 .stream()
                 .flatMap(Collection::stream);
-
-        return Stream.concat(groupPermissionsStream, getParentPermissions());
     }
 
     protected abstract Map<String, List<Permission>> getRawPermissionList();
 
     /**
      * @return A stream for the permissions of the parents for this permissible
-     *          Empty stream if this doesn't has any parent
+     * Empty stream if this doesn't has any parent
      */
     protected abstract Stream<Permission> getParentPermissions();
 }
