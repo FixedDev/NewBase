@@ -5,6 +5,8 @@ import me.fixeddev.base.api.permissions.group.Group;
 import me.fixeddev.base.api.permissions.permission.Permission;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +23,8 @@ public class SimplePermissionsData extends AbstractPermissible implements Permis
 
     private String id;
 
+    private Map<String, List<Permission>> parentPermissions;
+
     private Map<String, List<Permission>> permissionsList;
     private String primaryGroup;
 
@@ -35,10 +39,7 @@ public class SimplePermissionsData extends AbstractPermissible implements Permis
         this.primaryGroup = primaryGroup.getName();
 
         permissionsList = new ConcurrentHashMap<>();
-
-        Map<String, List<Permission>> groupPermissions = primaryGroup.getEffectivePermissions(subject).stream().collect(Collectors.groupingBy(Permission::getName));
-
-        permissionsList.putAll(groupPermissions);
+        parentPermissions = primaryGroup.getEffectivePermissions(subject).stream().collect(Collectors.groupingBy(Permission::getName));
     }
 
     @Override
@@ -56,6 +57,12 @@ public class SimplePermissionsData extends AbstractPermissible implements Permis
         return calculationTime;
     }
 
+    public void setPermissions(List<Permission> permissions) {
+        permissions.forEach(perm -> {
+            permissionsList.computeIfAbsent(perm.getName(), s -> new ArrayList<>()).add(perm);
+        });
+    }
+
     @Override
     protected Map<String, List<Permission>> getRawPermissionList() {
         return permissionsList;
@@ -63,7 +70,8 @@ public class SimplePermissionsData extends AbstractPermissible implements Permis
 
     @Override
     protected Stream<Permission> getParentPermissions() {
-        return Stream.of();
+        return parentPermissions.values().stream()
+                .flatMap(Collection::stream);
     }
 
 
