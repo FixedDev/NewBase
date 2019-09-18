@@ -2,7 +2,7 @@ package me.fixeddev.base.api.user.permissions;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.fixeddev.base.api.permissions.Tristate;
-import me.fixeddev.base.api.permissions.permission.Permission;
+import me.fixeddev.base.api.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.beans.ConstructorProperties;

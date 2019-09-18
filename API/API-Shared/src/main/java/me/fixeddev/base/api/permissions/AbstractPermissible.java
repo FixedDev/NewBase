@@ -1,7 +1,6 @@
 package me.fixeddev.base.api.permissions;
 
 import me.fixeddev.base.api.permissions.context.ContextResolverRegistry;
-import me.fixeddev.base.api.permissions.permission.Permission;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

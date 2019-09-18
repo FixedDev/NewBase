@@ -1,10 +1,7 @@
-package me.fixeddev.base.api.permissions.permission;
+package me.fixeddev.base.api.permissions;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import me.fixeddev.base.api.permissions.Deniable;
-import me.fixeddev.base.api.permissions.Weightable;
-import me.fixeddev.base.api.permissions.Contextable;
 import me.fixeddev.base.api.permissions.context.Context;
 
 import java.util.Map;

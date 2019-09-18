@@ -6,11 +6,9 @@ import me.fixeddev.base.api.datamanager.SavableObject;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.Contextable;
 import me.fixeddev.base.api.permissions.Permissible;
-import me.fixeddev.base.api.permissions.Tristate;
 import me.fixeddev.base.api.permissions.Weightable;
 import me.fixeddev.base.api.permissions.context.Context;
-import me.fixeddev.base.api.permissions.context.ContextResolverRegistry;
-import me.fixeddev.base.api.permissions.permission.Permission;
+import me.fixeddev.base.api.permissions.Permission;
 
 import java.util.ArrayList;
 import java.util.Collection;

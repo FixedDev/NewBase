@@ -3,7 +3,7 @@ package me.fixeddev.base.api.user.permissions;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.group.Group;
-import me.fixeddev.base.api.permissions.permission.Permission;
+import me.fixeddev.base.api.permissions.Permission;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
