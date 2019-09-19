@@ -1,7 +1,6 @@
 package me.fixeddev.base.api.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -34,6 +33,10 @@ public class RedisService implements AbstractService {
     }
 
     public RedissonClient getRedisson() {
+        if(!started.get()){
+            throw new IllegalStateException("The service must be initialized first!");
+        }
+
         return redisson;
     }
 
