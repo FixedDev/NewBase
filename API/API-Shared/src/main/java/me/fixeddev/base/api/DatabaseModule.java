@@ -11,9 +11,6 @@ public class DatabaseModule extends ProtectedModule {
     protected void configure() {
         ServiceBinder serviceBinder = ServiceBinder.newBinder(binder());
 
-        bind(MongoService.class);
-        bind(RedisService.class);
-
         serviceBinder.bindService(MongoService.class, null);
         serviceBinder.bindService(RedisService.class, null);
 
