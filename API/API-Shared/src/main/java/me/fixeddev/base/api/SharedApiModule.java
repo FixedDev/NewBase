@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import me.fixeddev.base.api.messager.MessagerModule;
 import me.fixeddev.inject.ProtectedModule;
 
 import java.util.concurrent.ExecutorService;
@@ -15,6 +16,7 @@ public class SharedApiModule extends ProtectedModule {
         bind(ExecutorService.class).to(ListeningExecutorService.class);
 
         install(new JacksonModule());
+        install(new MessagerModule());
         install(new DatabaseModule());
         install(new ManagersModule());
     }
