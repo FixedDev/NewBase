@@ -2,6 +2,7 @@ package me.fixeddev.base.api.user;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import me.fixeddev.base.api.datamanager.SavableObject;
+import me.fixeddev.base.api.datamanager.meta.ObjectName;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.permissions.PermissionsData;
 import org.jetbrains.annotations.NotNull;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@ObjectName("user")
 public interface User extends SavableObject {
 
     UUID getMinecraftId();

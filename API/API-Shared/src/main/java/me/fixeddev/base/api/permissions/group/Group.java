@@ -3,6 +3,7 @@ package me.fixeddev.base.api.permissions.group;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import me.fixeddev.base.api.datamanager.SavableObject;
+import me.fixeddev.base.api.datamanager.meta.ObjectName;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.Contextable;
 import me.fixeddev.base.api.permissions.Permissible;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
+@ObjectName("group")
 public class Group extends AbstractPermissible implements Weightable, Contextable, Permissible, SavableObject {
 
     private final String groupName;
