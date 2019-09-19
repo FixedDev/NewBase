@@ -7,10 +7,11 @@ import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.inject.Inject;
+import me.fixeddev.base.api.datamanager.meta.ObjectMeta;
 import me.fixeddev.base.api.messager.Channel;
 import me.fixeddev.base.api.messager.ChannelListener;
 import me.fixeddev.base.api.messager.Messager;
-import me.fixeddev.base.api.messager.RedisMessager;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,8 +26,12 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
 
     private LoadingCache<String, O> objectCache;
 
-    public ObjectLocalCache(Class<O> type, ObjectRepository<O> repository, RedisCache<O> parentCache, Messager messager) {
+    @SuppressWarnings("unchecked")
+    @Inject
+    public ObjectLocalCache(ObjectMeta<O> meta, ObjectRepository<O> repository, RedisCache<O> parentCache, Messager messager) {
         objectRepository = repository;
+
+        Class<O> type = (Class<O>) meta.getType().getRawType();
 
         this.objectCache = Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(1))
@@ -42,7 +47,7 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
                 .build(s -> {
                     Optional<O> optionalObject = Optional.empty();
 
-                    if(parentCache != null){
+                    if (parentCache != null) {
                         optionalObject = parentCache.getIfCached(s);
                     }
 
@@ -83,7 +88,7 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
     public Optional<O> getIfCached(@NotNull String id) {
         Optional<O> optional = Optional.ofNullable(objectCache.getIfPresent(id));
 
-        if(parentCache != null){
+        if (parentCache != null) {
             optional = optional.isPresent() ? optional : parentCache.getIfCached(id);
         }
 
