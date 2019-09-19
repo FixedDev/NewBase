@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import me.fixeddev.base.api.redis.RedisService;
 
 import javax.inject.Singleton;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,13 +23,14 @@ public class RedisMessager implements Messager {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> Channel<T> getChannel(String channelName, TypeToken<T> type) {
-        Channel<T> channel = (Channel<T>) channels.get(type).get(channelName);
+        Channel<T> channel = (Channel<T>) channels.computeIfAbsent(type, ignored -> new HashMap<>()).get(channelName);
 
         if (channel == null) {
             channel = new RedisChannel<>(channelName, type, redis);
 
-            channels.computeIfAbsent(type, typeToken -> new ConcurrentHashMap<>()).put(channelName, channel);
+            channels.get(type).put(channelName, channel);
         }
 
         return channel;
