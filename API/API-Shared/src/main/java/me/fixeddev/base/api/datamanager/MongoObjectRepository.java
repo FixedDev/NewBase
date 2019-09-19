@@ -11,11 +11,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
+import me.fixeddev.base.api.datamanager.meta.ObjectMeta;
 import me.fixeddev.base.api.messager.Channel;
 import me.fixeddev.base.api.messager.Messager;
-import me.fixeddev.base.api.messager.RedisMessager;
 import me.fixeddev.base.api.mongo.MongoService;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -37,13 +36,15 @@ public class MongoObjectRepository<O extends SavableObject> implements ObjectRep
     private Channel<UpdateCachedObjectRequest<O>> updateCachedObjectChannel;
     private Channel<DeleteCachedObjectRequest<O>> deleteCachedObjectChannel;
 
-    public MongoObjectRepository(Messager messager, MongoService mongoService, ListeningExecutorService executorService, String dataPath, Class<O> type) {
+    @SuppressWarnings({"unchecked"})
+    @Inject
+    public MongoObjectRepository(Messager messager, MongoService mongoService, ListeningExecutorService executorService, ObjectMeta<O> objectMeta) {
         this.mongoService = mongoService;
         this.executorService = executorService;
 
-        this.dataPath = dataPath;
+        this.dataPath = objectMeta.getDataPath();
 
-        this.type = type;
+        this.type = (Class<O>) objectMeta.getType().getRawType();
 
         TypeToken<UpdateCachedObjectRequest<O>> updateChannelType = new TypeToken<UpdateCachedObjectRequest<O>>() {
         }
