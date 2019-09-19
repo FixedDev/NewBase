@@ -4,6 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.inject.Inject;
+import me.fixeddev.base.api.datamanager.meta.ObjectMeta;
 import me.fixeddev.base.api.future.Callback;
 import me.fixeddev.base.api.redis.RedisService;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +26,12 @@ public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> 
     private ObjectRepository<O> objectRepo;
     private RedisService redisService;
 
-    public RedisCache(ObjectRepository<O> objectRepo, RedisService redisService, String dataPath) {
+    @Inject
+    public RedisCache(ObjectRepository<O> objectRepo, RedisService redisService, ObjectMeta<O> meta) {
         this.objectRepo = objectRepo;
         this.redisService = redisService;
 
-        this.dataPath = dataPath;
+        this.dataPath = meta.getDataPath();
     }
 
     @Override
