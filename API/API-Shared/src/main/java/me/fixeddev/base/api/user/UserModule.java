@@ -9,7 +9,7 @@ public class UserModule extends ProtectedModule {
     protected void configure() {
         install(new PermissionsDataModule());
 
-        DataManagerBinder binder = DataManagerBinder.createBinder(binder());
-        binder.bindDataManager(User.class, "user");
+        DataManagerBinder binder = DataManagerBinder.createBinder(binder(), User.class);
+        binder.bind();
     }
 }

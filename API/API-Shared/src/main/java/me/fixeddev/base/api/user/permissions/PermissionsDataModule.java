@@ -6,8 +6,8 @@ import me.fixeddev.inject.ProtectedModule;
 public class PermissionsDataModule extends ProtectedModule {
     @Override
     protected void configure() {
-        DataManagerBinder.createBinder(binder())
-                .bindRedisCache(PermissionsData.class, "user:permissions-data");
+        DataManagerBinder.createBinder(binder(), PermissionsData.class)
+                .bindRedisCache();
 
         bind(PermissionDataCalculator.class).to(AbstractPermissionDataCalculator.class);
     }

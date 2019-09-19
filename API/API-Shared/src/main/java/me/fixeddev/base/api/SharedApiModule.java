@@ -16,7 +16,6 @@ public class SharedApiModule extends ProtectedModule {
         bind(ExecutorService.class).to(ListeningExecutorService.class);
 
         install(new JacksonModule());
-        install(new MessagerModule());
         install(new DatabaseModule());
         install(new ManagersModule());
     }

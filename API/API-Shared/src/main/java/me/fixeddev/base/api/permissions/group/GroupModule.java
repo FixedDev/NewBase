@@ -7,8 +7,8 @@ import me.fixeddev.inject.ProtectedModule;
 public class GroupModule extends ProtectedModule {
     @Override
     protected void configure() {
-        DataManagerBinder dataManagerBinder = DataManagerBinder.createBinder(binder());
-        dataManagerBinder.bindObjectRepository(Group.class, "permission:groups");
+        DataManagerBinder dataManagerBinder = DataManagerBinder.createBinder(binder(), Group.class);
+        dataManagerBinder.bind();
 
         bind(GroupManager.class).to(BaseGroupManager.class).in(Scopes.SINGLETON);
     }
