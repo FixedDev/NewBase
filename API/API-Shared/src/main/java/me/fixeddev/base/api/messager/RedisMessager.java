@@ -19,6 +19,12 @@ public class RedisMessager implements Messager {
     @Inject
     public RedisMessager(RedisService executor) {
         redis = executor;
+
+        if(!redis.isStarted().get()){
+            redis.doStart();
+            redis.isStarted().set(true);
+        }
+
         this.channels = new ConcurrentHashMap<>();
     }
 
