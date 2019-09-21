@@ -23,21 +23,27 @@ class SimpleDataManagerBinder<T extends SavableObject> implements DataManagerBin
                 .toInstance(ObjectMeta.createObjectMeta(type));
     }
 
-    public void bind() {
+    public DataManagerBinder<T> bind() {
         bindRedisCache();
         binder.bind(getParameterized(ObjectLocalCache.class, type)).in(Scopes.SINGLETON);
+
+        return this;
     }
 
     @Override
-    public void bindRedisCache() {
+    public DataManagerBinder<T> bindRedisCache() {
         bindObjectRepository();
         binder.bind(getParameterized(RedisCache.class, type)).in(Scopes.SINGLETON);
+
+        return this;
     }
 
     @Override
-    public void bindObjectRepository() {
+    public DataManagerBinder<T> bindObjectRepository() {
         binder.bind(getParameterized(ObjectRepository.class, type))
                 .to(getParameterized(MongoObjectRepository.class, type)).in(Scopes.SINGLETON);
+
+        return this;
     }
 
     @Override

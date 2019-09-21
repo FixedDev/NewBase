@@ -8,14 +8,14 @@ import me.fixeddev.base.api.datamanager.SavableObject;
 
 
 public interface DataManagerBinder<T extends SavableObject> {
-    void bind();
+    DataManagerBinder<T> bind();
 
-    void bindObjectRepository();
+    DataManagerBinder<T> bindObjectRepository();
 
     /**
      * Binds a {@link RedisCache} and it's corresponding {@link ObjectRepository}
      */
-    void bindRedisCache();
+    DataManagerBinder<T> bindRedisCache();
 
     <O extends SavableObject> DataManagerBinder<O> newBinder(Class<O> type);
 
