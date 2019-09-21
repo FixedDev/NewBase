@@ -1,4 +1,4 @@
-name: API
+name: Base-API
 version: ${project.version}
 author: FixedDev
 main: me.fixeddev.base.api.bukkit.BaseBukkitPlugin
