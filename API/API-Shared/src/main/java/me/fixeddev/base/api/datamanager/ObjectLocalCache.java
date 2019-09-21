@@ -69,8 +69,8 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
                 .where(new TypeParameter<O>() {
                 }, type);
 
-        String updateChannelName = "updateCachedObject" + type.getName();
-        String deleteChannelName = "deleteCachedObject" + type.getName();
+        String updateChannelName = "updateCachedObject:" + meta.getDataPath();
+        String deleteChannelName = "deleteCachedObject:" + meta.getDataPath();
 
         Channel<UpdateCachedObjectRequest<O>> updateCachedObjectChannel = messager.getChannel(updateChannelName, updateChannelType);
         Channel<DeleteCachedObjectRequest<O>> deleteCachedObjectChannel = messager.getChannel(deleteChannelName, deleteChannelType);

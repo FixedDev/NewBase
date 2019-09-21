@@ -56,8 +56,8 @@ public class MongoObjectRepository<O extends SavableObject> implements ObjectRep
                 .where(new TypeParameter<O>() {
                 }, type);
 
-        updateCachedObjectChannel = messager.getChannel("updateCachedObject" + dataPath, updateChannelType);
-        deleteCachedObjectChannel = messager.getChannel("deleteCachedObject" + dataPath, deleteChannelType);
+        updateCachedObjectChannel = messager.getChannel("updateCachedObject:" + dataPath, updateChannelType);
+        deleteCachedObjectChannel = messager.getChannel("deleteCachedObject:" + dataPath, deleteChannelType);
     }
 
     @Override
