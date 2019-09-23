@@ -10,6 +10,7 @@
     <version>2.0</version>
     <modules>
         <module>API</module>
+        <module>Commons</module>
     </modules>
 
     <properties>
