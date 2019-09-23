@@ -37,6 +37,8 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>with-dependencies</shadedClassifierName>
                     <relocations>
                         <relocation>
                             <pattern>io.netty</pattern>
