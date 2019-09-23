@@ -7,12 +7,16 @@ import me.fixeddev.base.api.datamanager.meta.ObjectName;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
 import me.fixeddev.base.api.permissions.Contextable;
 import me.fixeddev.base.api.permissions.Permissible;
+import me.fixeddev.base.api.permissions.Tristate;
 import me.fixeddev.base.api.permissions.Weightable;
 import me.fixeddev.base.api.permissions.context.Context;
 import me.fixeddev.base.api.permissions.Permission;
+import me.fixeddev.base.api.permissions.context.ContextResolverRegistry;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,7 +34,7 @@ public class Group extends AbstractPermissible implements Weightable, Contextabl
 
     private List<Group> parents;
 
-    private Map<String,List<Permission>> permissionList;
+    private Map<String, List<Permission>> permissionList;
 
     private Map<String, Context> contexts;
 
@@ -101,6 +105,26 @@ public class Group extends AbstractPermissible implements Weightable, Contextabl
     @Override
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    @NotNull
+    @Override
+    public Tristate hasPermission(@NotNull String permission, Object subject) {
+        if (!ContextResolverRegistry.getInstance().isApplicable(this, subject)) {
+            return Tristate.UNDEFINED;
+        }
+
+        return super.hasPermission(permission, subject);
+    }
+
+    @NotNull
+    @Override
+    public List<Permission> getEffectivePermissions(Object subject) {
+        if (!ContextResolverRegistry.getInstance().isApplicable(this, subject)) {
+            return Collections.EMPTY_LIST;
+        }
+
+        return super.getEffectivePermissions(subject);
     }
 
     @Override
