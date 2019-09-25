@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.meta.ObjectMeta;
 import me.fixeddev.base.api.future.Callback;
@@ -17,21 +18,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> {
 
     private String dataPath;
 
+    private ListeningExecutorService executorService;
+
     private ObjectRepository<O> objectRepo;
     private RedisService redisService;
 
     @Inject
-    public RedisCache(ObjectRepository<O> objectRepo, RedisService redisService, ObjectMeta<O> meta) {
+    public RedisCache(ObjectRepository<O> objectRepo, RedisService redisService, ObjectMeta<O> meta, ListeningExecutorService executorService) {
         this.objectRepo = objectRepo;
         this.redisService = redisService;
 
         this.dataPath = meta.getDataPath();
+
+        this.executorService = executorService;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> 
                 }
 
                 return Optional.ofNullable(o);
-            });
+            }, executorService);
         }
 
         return Futures.immediateFuture(cachedObject);
@@ -56,7 +62,13 @@ public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> 
 
     @Override
     public void loadIfAbsent(@NotNull String id) {
-        getOrFind(id);
+        try {
+            getOrFind(id).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

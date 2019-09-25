@@ -7,6 +7,7 @@ import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.meta.ObjectMeta;
 import me.fixeddev.base.api.messager.Channel;
@@ -21,6 +22,8 @@ import java.util.stream.Stream;
 
 public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLayer<O> {
 
+    private ListeningExecutorService executorService;
+
     private ObjectRepository<O> objectRepository;
     private RedisCache<O> parentCache;
 
@@ -28,8 +31,10 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
 
     @SuppressWarnings("unchecked")
     @Inject
-    public ObjectLocalCache(ObjectMeta<O> meta, ObjectRepository<O> repository, RedisCache<O> parentCache, Messager messager) {
+    public ObjectLocalCache(ObjectMeta<O> meta, ObjectRepository<O> repository, RedisCache<O> parentCache, Messager messager, ListeningExecutorService executorService) {
         objectRepository = repository;
+
+        this.executorService = executorService;
 
         Class<O> type = (Class<O>) meta.getType().getRawType();
 
@@ -81,12 +86,12 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
 
     @Override
     public ListenableFuture<Optional<O>> getOrFind(@NotNull String id) {
-        return Futures.immediateFuture(Optional.ofNullable(objectCache.get(id)));
+        return executorService.submit(() -> Optional.ofNullable(objectCache.get(id)));
     }
 
     @Override
     public void loadIfAbsent(@NotNull String id) {
-        getOrFind(id);
+        objectCache.get(id);
     }
 
     @Override
