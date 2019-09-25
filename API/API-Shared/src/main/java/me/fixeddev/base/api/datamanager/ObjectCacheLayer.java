@@ -19,6 +19,8 @@ public interface ObjectCacheLayer<O extends SavableObject> {
      */
     ListenableFuture<Optional<O>> getOrFind(@NotNull String id);
 
+    void loadIfAbsent(@NotNull String id);
+
     Optional<O> getIfCached(@NotNull String id);
 
     void refresh(String id);

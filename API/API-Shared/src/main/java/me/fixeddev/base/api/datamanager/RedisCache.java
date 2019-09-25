@@ -55,6 +55,11 @@ public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> 
     }
 
     @Override
+    public void loadIfAbsent(@NotNull String id) {
+        getOrFind(id);
+    }
+
+    @Override
     public Optional<O> getIfCached(@NotNull String id) {
         RedissonClient redis = redisService.getRedisson();
 

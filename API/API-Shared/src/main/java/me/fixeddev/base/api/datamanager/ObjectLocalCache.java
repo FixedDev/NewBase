@@ -85,6 +85,11 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
     }
 
     @Override
+    public void loadIfAbsent(@NotNull String id) {
+        getOrFind(id);
+    }
+
+    @Override
     public Optional<O> getIfCached(@NotNull String id) {
         Optional<O> optional = Optional.ofNullable(objectCache.getIfPresent(id));
 
