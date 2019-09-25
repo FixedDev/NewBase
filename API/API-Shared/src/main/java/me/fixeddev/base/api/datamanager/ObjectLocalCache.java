@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.reflect.TypeParameter;
 import com.google.common.reflect.TypeToken;
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
@@ -92,6 +91,11 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
     @Override
     public void loadIfAbsent(@NotNull String id) {
         objectCache.get(id);
+    }
+
+    @Override
+    public void cacheObject(@NotNull O object) {
+        objectCache.put(object.id(), object);
     }
 
     @Override

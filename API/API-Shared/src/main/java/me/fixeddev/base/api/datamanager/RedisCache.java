@@ -72,6 +72,17 @@ public class RedisCache<O extends SavableObject> implements ObjectCacheLayer<O> 
     }
 
     @Override
+    public void cacheObject(@NotNull O object) {
+        executorService.submit(() -> {
+            RedissonClient redis = redisService.getRedisson();
+            RBucket<O> rBucket = redis.getBucket(dataPath + ":" + object.id());
+
+            rBucket.set(object);
+            rBucket.expire(2, TimeUnit.MINUTES);
+        });
+    }
+
+    @Override
     public Optional<O> getIfCached(@NotNull String id) {
         RedissonClient redis = redisService.getRedisson();
 

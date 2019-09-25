@@ -21,6 +21,14 @@ public interface ObjectCacheLayer<O extends SavableObject> {
 
     void loadIfAbsent(@NotNull String id);
 
+    /**
+     * This caches the specified object into this cache,
+     * If a object with the id of this object already exists, will be replaced
+     *
+     * @param object The object to cache
+     */
+    void cacheObject(@NotNull O object);
+
     Optional<O> getIfCached(@NotNull String id);
 
     void refresh(String id);
