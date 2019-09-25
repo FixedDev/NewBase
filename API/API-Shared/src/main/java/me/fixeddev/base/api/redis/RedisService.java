@@ -64,6 +64,15 @@ public class RedisService implements AbstractService {
     }
 
     @Override
+    public void start() throws Exception {
+        if (!isStarted().compareAndSet(false, true)) {
+            return;
+        }
+
+        doStart();
+    }
+
+    @Override
     public AtomicBoolean isStarted() {
         return started;
     }
