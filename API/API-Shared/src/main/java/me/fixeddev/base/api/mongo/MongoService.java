@@ -9,6 +9,8 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import de.undercouch.bson4jackson.BsonFactory;
+import de.undercouch.bson4jackson.BsonParser;
 import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import me.fixeddev.base.api.service.AbstractService;
@@ -60,8 +62,9 @@ public class MongoService implements AbstractService {
         ConnectionString connectionStringObject = new ConnectionString(connectionString);
 
         ObjectMapper mapper = ObjectMapperFactory.createObjectMapper();
-
         CodecRegistry codecRegistry = CodecRegistries.fromProviders(new JacksonCodecProvider(mapper));
+
+        codecRegistry = CodecRegistries.fromRegistries(MongoClientSettings.getDefaultCodecRegistry(), codecRegistry);
 
         mongoClient = MongoClients.create(MongoClientSettings.builder()
                 .applyConnectionString(connectionStringObject)
