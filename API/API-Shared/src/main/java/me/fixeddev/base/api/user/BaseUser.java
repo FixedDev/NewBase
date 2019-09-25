@@ -1,5 +1,6 @@
 package me.fixeddev.base.api.user;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 import me.fixeddev.base.api.future.FutureUtils;
@@ -8,6 +9,7 @@ import me.fixeddev.base.api.user.permissions.PermissionsData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+@JsonSerialize(as = User.class)
 public class BaseUser implements User {
 
     private UUID minecraftId;
@@ -32,12 +35,14 @@ public class BaseUser implements User {
     @Nullable
     private PermissionsData cachedPermissionsData;
 
-    public BaseUser(UUID minecraftId,
+    @ConstructorProperties({"_id", "nameHistory", "lastSpeakTime", "globalChatVisible", "staffChatVisibility"})
+    public BaseUser(String id,
                     List<String> nameHistory,
                     long lastSpeakTime,
                     boolean globalChatVisible,
                     boolean staffChatVisibility) {
-        this.minecraftId = minecraftId;
+
+        this.minecraftId = UUID.fromString(id);
         this.nameHistory = nameHistory;
         this.lastSpeakTime = lastSpeakTime;
         this.globalChatVisible = globalChatVisible;
@@ -149,7 +154,7 @@ public class BaseUser implements User {
 
     @Override
     public void invalidatePermissionsData() {
-		asyncFieldsLock.lock();
+        asyncFieldsLock.lock();
         this.cachedPermissionsData = null;
         asyncFieldsLock.unlock();
     }

@@ -1,5 +1,7 @@
 package me.fixeddev.base.api.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.util.concurrent.ListenableFuture;
 import me.fixeddev.base.api.datamanager.SavableObject;
 import me.fixeddev.base.api.datamanager.meta.ObjectName;
@@ -12,11 +14,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ObjectName("user")
+@JsonDeserialize(as = BaseUser.class)
 public interface User extends SavableObject {
 
+    @JsonIgnore
     UUID getMinecraftId();
 
     List<String> getNameHistory();
+    @JsonIgnore
     Optional<String> getLastName();
     void addLastName(String name);
 
@@ -34,6 +39,8 @@ public interface User extends SavableObject {
      * @throws IllegalStateException if the user doesn't has a primary group set already
      */
     String getPrimaryGroup();
+
+    @JsonIgnore
     void setPrimaryGroup(@NotNull String group);
 
     /**
@@ -42,6 +49,7 @@ public interface User extends SavableObject {
      *         absent if this user never calculated the {@link PermissionsData} or if the PermissionsData
      *         was invalidated and never re calculated
      */
+    @JsonIgnore
     Optional<PermissionsData> getPermissionData();
 
     /**
