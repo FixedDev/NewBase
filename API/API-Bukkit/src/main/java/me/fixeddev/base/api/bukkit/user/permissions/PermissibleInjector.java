@@ -52,7 +52,7 @@ public class PermissibleInjector {
 
     private PermissibleBase getPermissibleOf(Player player) throws NoSuchFieldException, IllegalAccessException {
         if (permissibleField == null) {
-            permissibleField = player.getClass().getField("perm");
+            permissibleField = player.getClass().getDeclaredField("perm");
         }
 
         boolean isAccesible = permissibleField.isAccessible();
