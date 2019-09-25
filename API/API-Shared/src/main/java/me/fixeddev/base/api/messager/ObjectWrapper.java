@@ -1,5 +1,6 @@
 package me.fixeddev.base.api.messager;
 
+import java.beans.ConstructorProperties;
 import java.util.UUID;
 
 public class ObjectWrapper<O> {
@@ -7,6 +8,7 @@ public class ObjectWrapper<O> {
 
     private final UUID channelInstanceId;
 
+    @ConstructorProperties({"object","channelInstanceId"})
     ObjectWrapper(O object, UUID channelInstanceId) {
         this.object = object;
         this.channelInstanceId = channelInstanceId;
