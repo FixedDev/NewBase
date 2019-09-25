@@ -12,7 +12,6 @@ import org.redisson.config.SingleServerConfig;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-@Singleton
 public class RedisService implements AbstractService {
 
     private Configuration config;
