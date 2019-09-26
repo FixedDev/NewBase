@@ -29,6 +29,9 @@ public class CustomPermissible extends PermissibleBase {
     // The attachment used for creating the AttachmentInfo for every effective permission
     private PermissionAttachment pluginAttachment;
 
+    // Ugly hack to prevent the freaking call of the super constructor to recalculatePermissions ._.
+    private boolean constructorCalled = false;
+
     public CustomPermissible(Player player, String userId, ObjectLocalCache<User> userRepo, PermissionDataCalculator dataCalculator, Plugin plugin) {
         super(player);
 
@@ -38,6 +41,9 @@ public class CustomPermissible extends PermissibleBase {
         this.userRepo = userRepo;
         this.dataCalculator = dataCalculator;
         pluginAttachment = this.addAttachment(plugin);
+
+        constructorCalled = true;
+        recalculatePermissions();
     }
 
     @Override
@@ -56,6 +62,10 @@ public class CustomPermissible extends PermissibleBase {
 
     @Override
     public void recalculatePermissions() {
+        if (!constructorCalled) {
+            return;
+        }
+
         ListenableFuture<Optional<User>> futureUser = userRepo.getOrFind(userId);
 
         FutureUtils.addCallback(futureUser, optional ->
