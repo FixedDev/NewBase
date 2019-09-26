@@ -5,10 +5,13 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.ObjectRepository;
+import me.fixeddev.base.api.future.FutureUtils;
 
 import java.util.Objects;
 
 public class BaseGroupManager implements GroupManager {
+
+    private static final String DEFAULT_GROUP = "default";
 
     @Inject
     private ObjectRepository<Group> groupObjectRepository;
@@ -43,6 +46,17 @@ public class BaseGroupManager implements GroupManager {
     @Override
     public ListenableFuture<Boolean> existsGroupWithName(String name) {
         return Futures.transform(groupObjectRepository.findOne(name), Objects::nonNull);
+    }
+
+    @Override
+    public ListenableFuture<Group> getDefaultGroup() {
+        return FutureUtils.transformAsync(getGroupByName(DEFAULT_GROUP), group -> {
+            if (group == null) {
+                return createGroup(DEFAULT_GROUP);
+            }
+
+            return Futures.immediateFuture(group);
+        });
     }
 
     @Override

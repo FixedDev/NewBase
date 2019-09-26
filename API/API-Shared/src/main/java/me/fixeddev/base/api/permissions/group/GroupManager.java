@@ -36,6 +36,8 @@ public interface GroupManager {
      */
     ListenableFuture<Boolean> existsGroupWithName(String name);
 
+    ListenableFuture<Group> getDefaultGroup();
+
     /**
      * Searches a group with the specified name and deletes it
      *
