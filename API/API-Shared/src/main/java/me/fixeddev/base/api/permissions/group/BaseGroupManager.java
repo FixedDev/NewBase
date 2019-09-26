@@ -11,8 +11,6 @@ import java.util.Objects;
 
 public class BaseGroupManager implements GroupManager {
 
-    private static final String DEFAULT_GROUP = "default";
-
     @Inject
     private ObjectRepository<Group> groupObjectRepository;
 

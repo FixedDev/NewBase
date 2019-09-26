@@ -3,6 +3,9 @@ package me.fixeddev.base.api.permissions.group;
 import com.google.common.util.concurrent.ListenableFuture;
 
 public interface GroupManager {
+
+    String DEFAULT_GROUP = "default";
+
     /**
      * Finds on the database a group with the specified name
      *

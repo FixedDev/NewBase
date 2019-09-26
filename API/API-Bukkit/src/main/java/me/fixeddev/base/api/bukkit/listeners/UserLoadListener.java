@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.ObjectLocalCache;
 import me.fixeddev.base.api.datamanager.ObjectRepository;
 import me.fixeddev.base.api.datamanager.RedisCache;
+import me.fixeddev.base.api.permissions.group.GroupManager;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.BaseUser;
 import me.fixeddev.base.api.user.User;
@@ -50,6 +51,10 @@ public class UserLoadListener implements Listener {
         }
 
         User userObject = user.get();
+
+        if (userObject.getPrimaryGroup() == null || userObject.getPrimaryGroup().isEmpty()) {
+            userObject.setPrimaryGroup(GroupManager.DEFAULT_GROUP);
+        }
 
         // The user is now usable, so, pre-calculate the permission data for the user
         userObject.calculatePermissionsData(calculator);
