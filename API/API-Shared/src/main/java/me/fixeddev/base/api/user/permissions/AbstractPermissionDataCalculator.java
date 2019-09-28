@@ -33,6 +33,10 @@ public abstract class AbstractPermissionDataCalculator implements PermissionData
             Group group = groupManager.getGroupByName(primaryGroupName).get();
             Object subject = getSubjectForUser(user);
 
+            if (group == null) {
+                throw new IllegalStateException("The group " + primaryGroupName + " of the user " + user.getLastName().orElse(user.id()) + " doesn't exist!");
+            }
+
             SimplePermissionsData newPermissionsData = new SimplePermissionsData(user.id(), group, subject);
 
             if (permissionsData.isPresent()) {
