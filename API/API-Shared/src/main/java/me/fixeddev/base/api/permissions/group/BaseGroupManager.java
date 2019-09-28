@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.ObjectRepository;
 import me.fixeddev.base.api.future.FutureUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 public class BaseGroupManager implements GroupManager {
@@ -55,6 +56,11 @@ public class BaseGroupManager implements GroupManager {
 
             return Futures.immediateFuture(group);
         });
+    }
+
+    @Override
+    public ListenableFuture<List<Group>> getAllGroups() {
+        return groupObjectRepository.find();
     }
 
     @Override

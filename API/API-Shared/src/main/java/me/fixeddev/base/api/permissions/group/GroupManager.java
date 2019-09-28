@@ -2,6 +2,9 @@ package me.fixeddev.base.api.permissions.group;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.util.List;
+import java.util.Set;
+
 public interface GroupManager {
 
     String DEFAULT_GROUP = "default";
@@ -39,7 +42,15 @@ public interface GroupManager {
      */
     ListenableFuture<Boolean> existsGroupWithName(String name);
 
+    /**
+     * Gets or creates the default group with name "default"
+     * The group is created if the group isn't already created
+     *
+     * @return A group with name "default"
+     */
     ListenableFuture<Group> getDefaultGroup();
+
+    ListenableFuture<List<Group>> getAllGroups();
 
     /**
      * Searches a group with the specified name and deletes it
