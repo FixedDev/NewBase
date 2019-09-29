@@ -21,7 +21,7 @@ public class Permission implements Deniable, Contextable, Weightable {
     private Map<String, Context> permissionContexts;
 
     @ConstructorProperties({"name", "denied", "weight", "allContexts"})
-    private Permission(String name, boolean denied, int weight, List<Context> permissionContexts) {
+    private Permission(String name, boolean denied, int weight, Set<Context> permissionContexts) {
         this.name = name;
         this.denied = denied;
         this.weight = weight;
