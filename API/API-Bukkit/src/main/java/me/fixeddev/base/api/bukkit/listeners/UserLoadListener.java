@@ -56,6 +56,9 @@ public class UserLoadListener implements Listener {
             userObject.setPrimaryGroup(GroupManager.DEFAULT_GROUP);
         }
 
+        // The user can have cached invalid data, so we invalidate it on join
+        userObject.invalidatePermissionsData();
+
         // The user is now usable, so, pre-calculate the permission data for the user
         userObject.calculatePermissionsData(calculator);
 
