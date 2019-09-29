@@ -10,6 +10,6 @@ public class UserModule extends ProtectedModule {
         install(new PermissionsDataModule());
 
         DataManagerBinder binder = DataManagerBinder.createBinder(binder(), User.class);
-        binder.bind();
+        binder.bind().expose();
     }
 }

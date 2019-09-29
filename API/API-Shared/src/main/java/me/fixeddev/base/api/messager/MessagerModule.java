@@ -6,5 +6,7 @@ public class MessagerModule extends ProtectedModule {
     @Override
     protected void configure() {
         bind(Messager.class).to(RedisMessager.class);
+
+        expose(Messager.class);
     }
 }

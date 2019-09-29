@@ -9,4 +9,9 @@ public class JacksonModule extends ProtectedModule {
     public ObjectMapper provideObjectMapper(){
         return new ObjectMapper();
     }
+
+    @Override
+    protected void configure() {
+        expose(ObjectMapper.class);
+    }
 }

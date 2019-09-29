@@ -11,5 +11,6 @@ public class GroupModule extends ProtectedModule {
         dataManagerBinder.bind();
 
         bind(GroupManager.class).to(BaseGroupManager.class).in(Scopes.SINGLETON);
+        expose(GroupManager.class);
     }
 }

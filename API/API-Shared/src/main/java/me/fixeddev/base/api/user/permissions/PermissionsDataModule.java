@@ -10,5 +10,6 @@ public class PermissionsDataModule extends ProtectedModule {
                 .bindRedisCache();
 
         bind(PermissionDataCalculator.class).to(AbstractPermissionDataCalculator.class);
+        expose(PermissionDataCalculator.class);
     }
 }
