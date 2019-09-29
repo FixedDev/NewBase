@@ -59,4 +59,6 @@ public interface GroupManager {
      * @return The deleted group or null if the group doesn't exists
      */
     ListenableFuture<Group> deleteGroupByName(String name);
+
+    void saveGroup(Group group);
 }

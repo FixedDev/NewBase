@@ -35,7 +35,7 @@ public class BaseGroupManager implements GroupManager {
             }
 
             Group group = new Group(name, weight);
-            groupObjectRepository.save(group);
+            saveGroup(group);
 
             return group;
         });
@@ -74,5 +74,10 @@ public class BaseGroupManager implements GroupManager {
 
             return group;
         });
+    }
+
+    @Override
+    public void saveGroup(Group group) {
+        groupObjectRepository.save(group);
     }
 }
