@@ -19,7 +19,7 @@ public abstract class AbstractPermissible implements Permissible {
     public Tristate hasPermission(@NotNull String permission, Object subject) {
         Optional<Permission> optionalPermission = getEffectivePermissions(subject).stream()
                 .filter(perm -> perm.getName().equals(permission))
-                .min(Comparator.comparingInt(Permission::getWeight));
+                .max(Comparator.comparingInt(Permission::getWeight));
 
         if (!optionalPermission.isPresent()) {
             return Tristate.UNDEFINED;
