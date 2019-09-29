@@ -1,7 +1,9 @@
 package me.fixeddev.base.api.permissions.group;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import me.fixeddev.base.api.datamanager.SavableObject;
 import me.fixeddev.base.api.datamanager.meta.ObjectName;
 import me.fixeddev.base.api.permissions.AbstractPermissible;
@@ -14,9 +16,11 @@ import me.fixeddev.base.api.permissions.Permission;
 import me.fixeddev.base.api.permissions.context.ContextResolverRegistry;
 import org.jetbrains.annotations.NotNull;
 
+import java.beans.ConstructorProperties;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,13 +44,25 @@ public class Group extends AbstractPermissible implements Weightable, Contextabl
 
     private int weight;
 
-    Group(String groupName, String prefix, String suffix, Map<String, List<Permission>> permissionList, List<Group> parents, Map<String, Context> contexts, int weight) {
+    @ConstructorProperties({"_id", "prefix", "suffix", "permissions", "parents", "allContexts", "weight"})
+    Group(String groupName, String prefix, String suffix, List<Permission> permissionList, List<Group> parents, Set<Context> contexts, int weight) {
         this.groupName = groupName;
         this.prefix = prefix;
         this.suffix = suffix;
         this.parents = parents;
-        this.permissionList = permissionList;
-        this.contexts = contexts;
+        this.permissionList = new ConcurrentHashMap<>();
+
+        for (Permission permission : permissionList) {
+            this.permissionList.computeIfAbsent(permission.getName(), s -> new ArrayList<>()).add(permission);
+        }
+
+        this.contexts = new ConcurrentHashMap<>();
+        if(contexts != null){
+            for (Context context : contexts){
+                this.contexts.put(context.getKey(), context);
+            }
+        }
+
         this.weight = weight;
     }
 
@@ -73,6 +89,7 @@ public class Group extends AbstractPermissible implements Weightable, Contextabl
         return groupName;
     }
 
+    @JsonIgnore
     public String getName() {
         return groupName;
     }
