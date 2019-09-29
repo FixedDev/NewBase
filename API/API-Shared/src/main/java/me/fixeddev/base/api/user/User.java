@@ -49,7 +49,6 @@ public interface User extends SavableObject {
      *         absent if this user never calculated the {@link PermissionsData} or if the PermissionsData
      *         was invalidated and never re calculated
      */
-    @JsonIgnore
     Optional<PermissionsData> getPermissionData();
 
     /**
