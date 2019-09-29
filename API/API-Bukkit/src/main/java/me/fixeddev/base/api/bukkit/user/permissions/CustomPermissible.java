@@ -118,42 +118,29 @@ public class CustomPermissible extends PermissibleBase {
     }
 
     private Tristate hasPermissionInternal(String permission) {
-        ListenableFuture<Optional<User>> futureUser = userRepo.getOrFind(userId);
+        Optional<User> cachedUser = userRepo.getIfCached(userId);
 
         // The user isn't cached, we can't stop all the server just to load an user
-        // So, we return false, the user is not loaded yet
-        if (!futureUser.isDone() || futureUser.isCancelled()) {
+        // So, we return UNDEFINED, the user is not loaded yet
+        if (!cachedUser.isPresent()) {
+            userRepo.loadIfAbsent(userId);
+
             return Tristate.UNDEFINED;
         }
 
-        try {
-            Optional<User> optionalUser = futureUser.get();
+        User user = cachedUser.get();
 
-            // The user doesn't exist, so that means that it doesn't has any permission
-            if (!optionalUser.isPresent()) {
-                return Tristate.UNDEFINED;
-            }
+        Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
 
-            User user = optionalUser.get();
+        // The permissions data aren't calculated yet, return false and calculate them
+        if (!optionalPermissionsData.isPresent()) {
+            user.calculatePermissionsData(dataCalculator);
 
-            Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
-
-            // The permissions data aren't calculated yet, return false and calculate them
-            if (!optionalPermissionsData.isPresent()) {
-                user.calculatePermissionsData(dataCalculator);
-
-                return Tristate.UNDEFINED;
-            }
-
-            PermissionsData permissionsData = optionalPermissionsData.get();
-
-            return permissionsData.hasPermission(permission, player);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            return Tristate.UNDEFINED;
         }
 
-        return Tristate.UNDEFINED;
+        PermissionsData permissionsData = optionalPermissionsData.get();
+
+        return permissionsData.hasPermission(permission, player);
     }
 }
