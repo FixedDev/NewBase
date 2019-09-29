@@ -32,6 +32,7 @@ public class Permission implements Deniable, Contextable, Weightable {
         }
     }
 
+
     private Permission(String name, boolean denied, int weight, Map<String, Context> permissionContexts) {
         this.name = name;
         this.denied = denied;

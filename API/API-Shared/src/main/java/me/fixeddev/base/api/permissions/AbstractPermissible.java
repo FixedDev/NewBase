@@ -25,7 +25,7 @@ public abstract class AbstractPermissible implements Permissible {
             return Tristate.UNDEFINED;
         }
 
-        return Tristate.fromBoolean(optionalPermission.get().isDenied());
+        return Tristate.fromBoolean(!optionalPermission.get().isDenied());
     }
 
     @Override
