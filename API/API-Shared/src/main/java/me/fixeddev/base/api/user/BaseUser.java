@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.beans.ConstructorProperties;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,18 +36,21 @@ public class BaseUser implements User {
     @Nullable
     private PermissionsData cachedPermissionsData;
 
-    @ConstructorProperties({"_id", "nameHistory", "lastSpeakTime", "globalChatVisible", "staffChatVisibility"})
-    public BaseUser(String id,
-                    List<String> nameHistory,
-                    long lastSpeakTime,
-                    boolean globalChatVisible,
-                    boolean staffChatVisibility) {
+    @ConstructorProperties({"_id", "nameHistory", "lastSpeakTime", "globalChatVisible", "staffChatVisibility", "permissionData"})
+    BaseUser(String id,
+             List<String> nameHistory,
+             long lastSpeakTime,
+             boolean globalChatVisible,
+             boolean staffChatVisibility,
+             Optional<PermissionsData> permissionsDataOptional) {
 
         this.minecraftId = UUID.fromString(id);
         this.nameHistory = nameHistory;
         this.lastSpeakTime = lastSpeakTime;
         this.globalChatVisible = globalChatVisible;
         this.staffChatVisibility = staffChatVisibility;
+
+        cachedPermissionsData = permissionsDataOptional.orElse(null);
     }
 
     public BaseUser(UUID minecraftId) {
@@ -135,6 +139,18 @@ public class BaseUser implements User {
     @Override
     public Optional<PermissionsData> getPermissionData() {
         return Optional.ofNullable(cachedPermissionsData);
+    }
+
+    @Override
+    public Optional<PermissionsData> getOrCalculatePermissionData(@NotNull PermissionDataCalculator dataCalculator) {
+        getPermissionData().map(permissionsData -> permissionsData.getCalculationTime().plusMinutes(1).isBefore(LocalTime.now()))
+                .ifPresent(shouldRecalculate -> {
+                    if (shouldRecalculate) {
+                        calculatePermissionsData(dataCalculator);
+                    }
+                });
+
+        return getPermissionData();
     }
 
     @Override

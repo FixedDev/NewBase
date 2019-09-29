@@ -52,6 +52,15 @@ public interface User extends SavableObject {
     Optional<PermissionsData> getPermissionData();
 
     /**
+     * Checks if this user has a cached instance of the {@link PermissionsData} and returns it
+     * If the cached {@link PermissionsData} is older than 1 minute, then it's recalculated
+     * @return an optional {@link PermissionsData} for this user,
+     *         absent if this user never calculated the {@link PermissionsData} or if the PermissionsData
+     *         was invalidated and never re calculated
+     */
+    Optional<PermissionsData> getOrCalculatePermissionData(@NotNull PermissionDataCalculator dataCalculator);
+
+    /**
      * Retrieves the {@link PermissionsData} of this user with the specified {@link PermissionDataCalculator}
      * And caches it on this user instance, so the {@link User#getPermissionData()} method can be used
      *
