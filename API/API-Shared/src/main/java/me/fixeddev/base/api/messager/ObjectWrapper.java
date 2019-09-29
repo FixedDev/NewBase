@@ -1,12 +1,18 @@
 package me.fixeddev.base.api.messager;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
+import java.beans.ConstructorProperties;
 import java.util.UUID;
 
-@AllArgsConstructor @Data
+@Getter
 public class ObjectWrapper<O> {
     private final O object;
     private final UUID channelInstanceId;
+
+    @ConstructorProperties({"object","channelInstanceId"})
+    public ObjectWrapper(O object, UUID channelInstanceId) {
+        this.object = object;
+        this.channelInstanceId = channelInstanceId;
+    }
 }
