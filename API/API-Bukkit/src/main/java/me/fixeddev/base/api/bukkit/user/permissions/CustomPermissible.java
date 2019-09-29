@@ -94,12 +94,10 @@ public class CustomPermissible extends PermissibleBase {
 
             User user = optionalUser.get();
 
-            Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
+            Optional<PermissionsData> optionalPermissionsData = user.getOrCalculatePermissionData(dataCalculator);
 
-            // The permissions data aren't calculated yet, return false and calculate them
+            // The permissions data aren't calculated yet, return, the data will be calculated automatically
             if (!optionalPermissionsData.isPresent()) {
-                user.calculatePermissionsData(dataCalculator);
-
                 return new HashSet<>();
             }
 
@@ -130,12 +128,10 @@ public class CustomPermissible extends PermissibleBase {
 
         User user = cachedUser.get();
 
-        Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
+        Optional<PermissionsData> optionalPermissionsData = user.getOrCalculatePermissionData(dataCalculator);
 
-        // The permissions data aren't calculated yet, return false and calculate them
+        // The permissions data aren't calculated yet, return UNDEFINED, the data will be calculated automatically
         if (!optionalPermissionsData.isPresent()) {
-            user.calculatePermissionsData(dataCalculator);
-
             return Tristate.UNDEFINED;
         }
 
