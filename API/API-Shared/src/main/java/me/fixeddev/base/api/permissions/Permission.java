@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import me.fixeddev.base.api.permissions.context.Context;
 
+import java.beans.ConstructorProperties;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +19,19 @@ public class Permission implements Deniable, Contextable, Weightable {
     private boolean denied;
     private int weight;
     private Map<String, Context> permissionContexts;
+
+    @ConstructorProperties({"name", "denied", "weight", "allContexts"})
+    private Permission(String name, boolean denied, int weight, List<Context> permissionContexts) {
+        this.name = name;
+        this.denied = denied;
+        this.weight = weight;
+        this.permissionContexts = new ConcurrentHashMap<>();
+
+        for (Context permissionContext : permissionContexts) {
+            this.permissionContexts.put(permissionContext.getKey(), permissionContext);
+        }
+    }
+
 
     private Permission(String name, boolean denied, int weight, Map<String, Context> permissionContexts) {
         this.name = name;
@@ -69,7 +84,7 @@ public class Permission implements Deniable, Contextable, Weightable {
 
     @Override
     public void addContext(Context context) {
-        Preconditions.checkNotNull(context,"You can't add null contexts");
+        Preconditions.checkNotNull(context, "You can't add null contexts");
 
         permissionContexts.put(context.getKey(), context);
     }
