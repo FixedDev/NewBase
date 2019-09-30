@@ -151,6 +151,17 @@ public class BaseUser implements User {
     }
 
     @Override
+    public Optional<PermissionsData> getOrInvalidatePermissionData() {
+        getPermissionData().map(permissionsData -> permissionsData.getCalculationTime().plusMinutes(1).isBefore(LocalTime.now()))
+                .ifPresent(shouldRecalculate -> {
+                    if (shouldRecalculate) {
+                        invalidatePermissionsData();
+                    }
+                });
+
+        return getPermissionData();    }
+
+    @Override
     public ListenableFuture<PermissionsData> calculatePermissionsData(@NotNull PermissionDataCalculator dataRetriever) {
         Objects.requireNonNull(dataRetriever);
 
