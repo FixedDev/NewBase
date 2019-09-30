@@ -1,7 +1,6 @@
 package me.fixeddev.base.api.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.util.concurrent.ListenableFuture;
 import me.fixeddev.base.api.datamanager.SavableObject;
@@ -41,6 +40,7 @@ public interface User extends SavableObject {
      */
     String getPrimaryGroup();
 
+    @JsonIgnore
     void setPrimaryGroup(@NotNull String group);
 
     /**
