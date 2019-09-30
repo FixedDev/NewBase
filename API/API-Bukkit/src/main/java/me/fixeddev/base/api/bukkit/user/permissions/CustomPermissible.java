@@ -60,7 +60,7 @@ public class CustomPermissible extends PermissibleBase {
     public boolean hasPermission(String inName) {
         Tristate permissionValue = hasPermissionInternal(inName);
 
-        if(isOp() && permissionValue != Tristate.FALSE){
+        if (isOp() && permissionValue != Tristate.FALSE) {
             return true;
         }
 
@@ -101,7 +101,7 @@ public class CustomPermissible extends PermissibleBase {
 
             User user = optionalUser.get();
 
-            Optional<PermissionsData> optionalPermissionsData = user.getOrCalculatePermissionData(dataCalculator);
+            Optional<PermissionsData> optionalPermissionsData = user.getOrInvalidatePermissionData();
 
             // The permissions data isn't calculated yet
             if (!optionalPermissionsData.isPresent()) {
@@ -143,7 +143,7 @@ public class CustomPermissible extends PermissibleBase {
 
         User user = cachedUser.get();
 
-        Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
+        Optional<PermissionsData> optionalPermissionsData = user.getOrInvalidatePermissionData();
 
         // The permissions data isn't calculated yet
         if (!optionalPermissionsData.isPresent()) {
