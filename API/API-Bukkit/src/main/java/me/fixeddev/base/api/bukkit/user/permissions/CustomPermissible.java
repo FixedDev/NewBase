@@ -60,6 +60,10 @@ public class CustomPermissible extends PermissibleBase {
     public boolean hasPermission(String inName) {
         Tristate permissionValue = hasPermissionInternal(inName);
 
+        if(isOp() && permissionValue != Tristate.FALSE){
+            return true;
+        }
+
         return permissionValue == Tristate.UNDEFINED ? super.hasPermission(inName) : permissionValue.toBoolean();
     }
 
