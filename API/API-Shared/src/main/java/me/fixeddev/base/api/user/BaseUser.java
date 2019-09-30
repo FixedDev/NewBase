@@ -36,21 +36,18 @@ public class BaseUser implements User {
     @Nullable
     private PermissionsData cachedPermissionsData;
 
-    @ConstructorProperties({"_id", "nameHistory", "lastSpeakTime", "globalChatVisible", "staffChatVisibility", "permissionData"})
+    @ConstructorProperties({"_id", "nameHistory", "lastSpeakTime", "globalChatVisible", "staffChatVisibility"})
     BaseUser(String id,
              List<String> nameHistory,
              long lastSpeakTime,
              boolean globalChatVisible,
-             boolean staffChatVisibility,
-             Optional<PermissionsData> permissionsDataOptional) {
+             boolean staffChatVisibility) {
 
         this.minecraftId = UUID.fromString(id);
         this.nameHistory = nameHistory;
         this.lastSpeakTime = lastSpeakTime;
         this.globalChatVisible = globalChatVisible;
         this.staffChatVisibility = staffChatVisibility;
-
-        cachedPermissionsData = permissionsDataOptional.orElse(null);
     }
 
     public BaseUser(UUID minecraftId) {
