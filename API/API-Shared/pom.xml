@@ -80,6 +80,13 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.9.8</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Caffeine -->
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
