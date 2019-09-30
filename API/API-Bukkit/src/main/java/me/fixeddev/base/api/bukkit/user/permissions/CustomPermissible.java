@@ -32,7 +32,10 @@ public class CustomPermissible extends PermissibleBase {
     // Ugly hack to prevent the freaking call of the super constructor to recalculatePermissions ._.
     private boolean constructorCalled = false;
 
-    public CustomPermissible(Player player, String userId, ObjectLocalCache<User> userRepo, PermissionDataCalculator dataCalculator, Plugin plugin) {
+    // Only used if the cached user is invalidated, so we don't have cached data on the user
+    private PermissionsData cachedData;
+
+    CustomPermissible(Player player, String userId, ObjectLocalCache<User> userRepo, PermissionDataCalculator dataCalculator, Plugin plugin) {
         super(player);
 
         this.player = player;
@@ -70,7 +73,7 @@ public class CustomPermissible extends PermissibleBase {
 
         FutureUtils.addCallback(futureUser, optional ->
                 optional.ifPresent(user -> {
-                    user.calculatePermissionsData(dataCalculator);
+                    onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
                 }));
     }
 
@@ -96,9 +99,17 @@ public class CustomPermissible extends PermissibleBase {
 
             Optional<PermissionsData> optionalPermissionsData = user.getOrCalculatePermissionData(dataCalculator);
 
-            // The permissions data aren't calculated yet, return, the data will be calculated automatically
+            // The permissions data isn't calculated yet
             if (!optionalPermissionsData.isPresent()) {
-                return new HashSet<>();
+                // Check if we have any cached data
+                if (cachedData == null) {
+                    return new HashSet<>();
+                }
+
+                // We have cached data, use that
+                optionalPermissionsData = Optional.of(cachedData);
+                // Recalculate the data and change the cached data
+                onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
             }
 
             PermissionsData permissionsData = optionalPermissionsData.get();
@@ -128,15 +139,34 @@ public class CustomPermissible extends PermissibleBase {
 
         User user = cachedUser.get();
 
-        Optional<PermissionsData> optionalPermissionsData = user.getOrCalculatePermissionData(dataCalculator);
+        Optional<PermissionsData> optionalPermissionsData = user.getPermissionData();
 
-        // The permissions data aren't calculated yet, return UNDEFINED, the data will be calculated automatically
+        // The permissions data isn't calculated yet
         if (!optionalPermissionsData.isPresent()) {
-            return Tristate.UNDEFINED;
+            // Check if we have any cached data
+            if (cachedData == null) {
+                return Tristate.UNDEFINED;
+            }
+
+            // We have cached data, use that
+            optionalPermissionsData = Optional.of(cachedData);
+            // Recalculate the data and change the cached data
+            onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
         }
 
         PermissionsData permissionsData = optionalPermissionsData.get();
 
         return permissionsData.hasPermission(permission, player);
+    }
+
+    // The name of this method isn't the best, but it's used to add a callback to the recalculated permissions data
+    private void onPermissionCalculate(ListenableFuture<PermissionsData> futurePermissionsData) {
+        FutureUtils.addCallback(futurePermissionsData, perms -> {
+            if (perms == null) {
+                return;
+            }
+
+            this.cachedData = perms;
+        });
     }
 }
