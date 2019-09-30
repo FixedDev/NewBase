@@ -7,13 +7,16 @@ import me.fixeddev.base.api.permissions.Tristate;
 import me.fixeddev.base.api.user.User;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.permissions.PermissionsData;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
+import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +67,7 @@ public class CustomPermissible extends PermissibleBase {
             return true;
         }
 
-        return permissionValue == Tristate.UNDEFINED ? super.hasPermission(inName) : permissionValue.toBoolean();
+        return permissionValue == Tristate.UNDEFINED ? bukkitHasPermission(inName) : permissionValue.toBoolean();
     }
 
     @Override
@@ -128,6 +131,25 @@ public class CustomPermissible extends PermissibleBase {
         }
 
         return new HashSet<>();
+    }
+
+    // This is there because the default bukkit method doesn't work with the override of isPermissionSet
+    // That I did
+    private boolean bukkitHasPermission(String inName){
+        if (inName == null) {
+            throw new IllegalArgumentException("Permission name cannot be null");
+        } else {
+            String name = inName.toLowerCase();
+
+            Map<String, PermissionAttachmentInfo> permissions = super.getEffectivePermissions().stream().collect(Collectors.toMap(PermissionAttachmentInfo::getPermission, (o) -> o));
+
+            if (super.isPermissionSet(name)) {
+                return permissions.get(name).getValue();
+            } else {
+                Permission perm = Bukkit.getServer().getPluginManager().getPermission(name);
+                return perm != null ? perm.getDefault().getValue(this.isOp()) : Permission.DEFAULT_PERMISSION.getValue(this.isOp());
+            }
+        }
     }
 
     private Tristate hasPermissionInternal(String permission) {
