@@ -7,5 +7,7 @@ public class TranslationsModule extends ProtectedModule {
     @Override
     protected void configure() {
         bind(TranslationManager.class).to(BaseTranslationManager.class).in(Scopes.SINGLETON);
+
+        expose(TranslationManager.class);
     }
 }
