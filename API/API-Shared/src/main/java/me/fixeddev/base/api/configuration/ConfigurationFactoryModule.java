@@ -8,7 +8,5 @@ public class ConfigurationFactoryModule extends ProtectedModule {
     protected void configure() {
         OptionalBinder<ConfigurationFactory> factoryOptionalBinder = OptionalBinder.newOptionalBinder(binder(), ConfigurationFactory.class);
         factoryOptionalBinder.setDefault().to(NullConfigurationFactory.class);
-
-        expose(ConfigurationFactory.class);
     }
 }
