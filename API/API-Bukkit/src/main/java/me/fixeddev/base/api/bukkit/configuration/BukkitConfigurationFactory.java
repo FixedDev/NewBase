@@ -37,7 +37,7 @@ public class BukkitConfigurationFactory implements ConfigurationFactory {
             }
         }
 
-        return getConfig(new File(dataFolder, fileName));
+        return getConfig(configFile);
     }
 
     @Override
