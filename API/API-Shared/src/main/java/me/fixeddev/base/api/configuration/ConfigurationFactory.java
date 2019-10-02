@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.IOException;
 
 public interface ConfigurationFactory {
-    Configuration getConfig(File file);
+    Configuration getConfig(File file) throws IOException;
 
-    Configuration getConfig(String fileName);
+    Configuration getConfig(String fileName) throws IOException;
 
     void saveConfiguration(Configuration configuration, File file) throws IOException;
 

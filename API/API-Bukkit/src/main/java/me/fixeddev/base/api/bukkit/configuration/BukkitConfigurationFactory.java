@@ -8,14 +8,18 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 
 public class BukkitConfigurationFactory implements ConfigurationFactory {
 
     private File dataFolder;
+    private Plugin plugin;
 
     @Inject
     BukkitConfigurationFactory(Plugin plugin) {
         dataFolder = plugin.getDataFolder();
+        this.plugin = plugin;
     }
 
     @Override
@@ -24,7 +28,15 @@ public class BukkitConfigurationFactory implements ConfigurationFactory {
     }
 
     @Override
-    public Configuration getConfig(String fileName) {
+    public Configuration getConfig(String fileName) throws IOException {
+        File configFile = new File(dataFolder, fileName);
+
+        if(!configFile.exists()){
+            try(InputStream stream = plugin.getResource(fileName)){
+                Files.copy(stream, configFile.toPath());
+            }
+        }
+
         return getConfig(new File(dataFolder, fileName));
     }
 
