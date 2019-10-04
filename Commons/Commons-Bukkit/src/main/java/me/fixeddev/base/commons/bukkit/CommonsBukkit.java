@@ -2,12 +2,14 @@ package me.fixeddev.base.commons.bukkit;
 
 import com.google.inject.Inject;
 import me.fixeddev.base.api.bukkit.configuration.BukkitConfigurationFactoryModule;
+import me.fixeddev.base.commons.CommonsModule;
 import me.fixeddev.base.commons.bukkit.commands.PermissionsGroupCommands;
 import me.fixeddev.base.commons.bukkit.commands.PermissionsUserCommands;
 import me.fixeddev.bcm.bukkit.BukkitCommandHandler;
 import me.fixeddev.bcm.parametric.ParametricCommandHandler;
 import me.fixeddev.bcm.parametric.providers.ParameterProviderRegistry;
 import me.fixeddev.inject.ProtectedBinder;
+import me.fixeddev.minecraft.config.Configuration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommonsBukkit extends JavaPlugin {
@@ -18,7 +20,10 @@ public class CommonsBukkit extends JavaPlugin {
 
     @Override
     public void configure(ProtectedBinder binder) {
+        binder.bind(Configuration.class).toInstance(getConfig());
+
         binder.install(new BukkitConfigurationFactoryModule());
+        binder.install(new CommonsModule());
     }
 
     @Override
