@@ -27,6 +27,13 @@ public class CommonsBukkit extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        if(!getDataFolder().exists()){
+            getDataFolder().mkdir();
+        }
+    }
+
+    @Override
     public void onEnable() {
         ParametricCommandHandler commandHandler = new BukkitCommandHandler(getLogger(), null, ParameterProviderRegistry.createRegistry());
 
