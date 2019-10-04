@@ -5,6 +5,7 @@ import me.fixeddev.base.api.configuration.ConfigurationFactory;
 import me.fixeddev.minecraft.config.Configuration;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public class BaseTranslationManager implements TranslationManager {
@@ -15,7 +16,7 @@ public class BaseTranslationManager implements TranslationManager {
     private TranslationProvider translationProvider;
 
     @Inject
-    BaseTranslationManager(Configuration configuration, ConfigurationFactory factory) {
+    BaseTranslationManager(Configuration configuration, ConfigurationFactory factory) throws IOException {
         this.defaultLanguage = configuration.getString("default-language", "en");
         this.factory = factory;
 
