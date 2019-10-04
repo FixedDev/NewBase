@@ -39,7 +39,7 @@ public class BaseTranslatableMessage implements TranslatableMessage {
 
         Matcher translationMatcher = NESTED_MESSAGE_FIND_PATTERN.matcher(translation);
 
-        for (int i = 0; translationMatcher.find(); i++) {
+        for (int i = 1; translationMatcher.find(); i++) {
             String nestedPath = translationMatcher.group(i);
 
             String nestedMessage = translationProvider.getTranslation(lang, nestedPath);
