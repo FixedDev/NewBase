@@ -1,0 +1,6 @@
+name: Base-Commons
+author: FixedDev
+main: me.fixeddev.base.commons.bukkit.CommonsBukkit
+version: ${project.version}
+depend:
+  - Base-API
