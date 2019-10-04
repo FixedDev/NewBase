@@ -3,7 +3,7 @@ user:
 
 commons:
   permissions:
-    group:
+    groups:
       available: "&eThe available groups are: {groups}"
       none-available: "&eThe available groups are: &cNone"
       already-exists: "&cA group with name {group} already exists!"
@@ -11,4 +11,4 @@ commons:
       created: "&aCreated group with name {group} and weight {weight}."
       added-permission: "&aAdded permission {permission} to group {group} with denied value '{denied}' and weight {weight}"
     user:
-      group-set: "&e{player}'s group is now&8:&6 '{group}'.";
+      set-group: "&e{player}'s group is now&8:&6 '{group}'."
