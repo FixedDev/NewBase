@@ -26,6 +26,13 @@ public class BaseBukkitPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+        if(!getDataFolder().exists()){
+            getDataFolder().mkdir();
+        }
+    }
+
+    @Override
     public void onEnable() {
         try {
             serviceManager.start();
