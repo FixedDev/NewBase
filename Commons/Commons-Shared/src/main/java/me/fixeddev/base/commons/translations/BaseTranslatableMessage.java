@@ -13,7 +13,7 @@ public class BaseTranslatableMessage implements TranslatableMessage {
     private Map<String, String> variableValues;
     private TranslationProvider translationProvider;
 
-    public static final Pattern NESTED_MESSAGE_FIND_PATTERN = Pattern.compile("\\[[\\w-_.]+\\]");
+    public static final Pattern NESTED_MESSAGE_FIND_PATTERN = Pattern.compile("\\[([\\w-_.]+)\\]");
 
     BaseTranslatableMessage(String path, TranslationProvider translationProvider) {
         this.path = path;
