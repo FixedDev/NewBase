@@ -37,7 +37,6 @@ public class BukkitConfigurationFactory implements ConfigurationFactory {
 
         if (!configFile.exists()) {
             try (InputStream stream = plugin.getResource(fileName)) {
-                configFile.createNewFile();
                 if (stream != null) {
                     Files.copy(stream, configFile.toPath());
                 }
