@@ -29,15 +29,17 @@ public class BukkitConfigurationFactory implements ConfigurationFactory {
 
     @Override
     public Configuration getConfig(String fileName) throws IOException {
-        if(!fileName.endsWith(".yml")){
+        if (!fileName.endsWith(".yml")) {
             fileName = fileName + ".yml";
         }
 
         File configFile = new File(dataFolder, fileName);
 
-        if(!configFile.exists()){
-            try(InputStream stream = plugin.getResource(fileName)){
-                Files.copy(stream, configFile.toPath());
+        if (!configFile.exists()) {
+            try (InputStream stream = plugin.getResource(fileName)) {
+                if (stream != null) {
+                    Files.copy(stream, configFile.toPath());
+                }
             }
         }
 
