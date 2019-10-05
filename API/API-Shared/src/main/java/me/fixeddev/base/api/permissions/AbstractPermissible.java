@@ -41,6 +41,13 @@ public abstract class AbstractPermissible implements Permissible {
         getRawPermissionList().computeIfAbsent(permission.getName(), s -> new ArrayList<>()).add(permission);
     }
 
+    @Override
+    public void removePermission(String permissionName) {
+        List<Permission> permissionList = getRawPermissionList().computeIfAbsent(permissionName, s -> new ArrayList<>());
+
+        permissionList.stream().max(Comparator.comparingInt(Permission::getWeight)).ifPresent(permissionList::remove);
+    }
+
     @NotNull
     @Override
     public List<Permission> getPermissions() {
