@@ -15,8 +15,9 @@ public interface Permissible {
      * and removes the permission with the highest weight
      *
      * @param permissionName The name of the permission to search for
+     * @return The removed permission or null if the permission couldn't be removed
      */
-    void removePermission(String permissionName);
+    Permission removePermission(String permissionName);
 
     /**
      * @return The specific permissions for this permissible, not counting the parent permissions
