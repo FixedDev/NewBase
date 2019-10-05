@@ -54,6 +54,11 @@ class PojoPermissionsData implements PermissionsData {
     public void setPermission(Permission permission) {
     }
 
+    @Override
+    public Permission removePermission(String permissionName) {
+        return null;
+    }
+
     @NotNull
     @Override
     public List<Permission> getPermissions() {
