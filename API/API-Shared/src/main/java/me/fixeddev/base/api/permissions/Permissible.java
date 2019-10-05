@@ -11,6 +11,14 @@ public interface Permissible {
     void setPermission(Permission permission);
 
     /**
+     * Searches permissions matching with the specified name permissionName
+     * and removes the permission with the highest weight
+     *
+     * @param permissionName The name of the permission to search for
+     */
+    void removePermission(String permissionName);
+
+    /**
      * @return The specific permissions for this permissible, not counting the parent permissions
      */
     @NotNull
