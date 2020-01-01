@@ -2,6 +2,7 @@ package me.fixeddev.base.api.bukkit.configuration;
 
 import me.fixeddev.minecraft.config.Configuration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class ConfigurationWrapper implements Configuration {
@@ -28,6 +29,6 @@ public class ConfigurationWrapper implements Configuration {
 
     @Override
     public Collection<?> getList(String s, Collection<?> collection) {
-        return config.getList(s, collection);
+        return config.getList(s, new ArrayList<>(collection));
     }
 }
