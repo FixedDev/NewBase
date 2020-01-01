@@ -24,7 +24,7 @@ public class BukkitConfigurationFactory implements ConfigurationFactory {
 
     @Override
     public Configuration getConfig(File file) {
-        return YamlConfiguration.loadConfiguration(file);
+        return new ConfigurationWrapper(YamlConfiguration.loadConfiguration(file));
     }
 
     @Override
