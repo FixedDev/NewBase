@@ -95,6 +95,7 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
 
     @Override
     public void cacheObject(@NotNull O object) {
+        parentCache.cacheObject(object);
         objectCache.put(object.id(), object);
     }
 
