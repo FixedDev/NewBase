@@ -9,6 +9,8 @@ import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.commons.translations.TranslationManager;
 import me.fixeddev.ebcm.parametric.CommandClass;
 import me.fixeddev.ebcm.parametric.annotation.ACommand;
+import me.fixeddev.ebcm.parametric.annotation.Injected;
+import me.fixeddev.ebcm.parametric.annotation.Named;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -31,7 +33,7 @@ public class PermissionsUserCommands implements CommandClass {
     private TranslationManager translationManager;
 
     @ACommand(names = "grant")
-    public boolean grantCommand(CommandSender sender, String rank, OfflinePlayer target) {
+    public boolean grantCommand(@Injected(true) @Named("SENDER") CommandSender sender, String rank, OfflinePlayer target) {
         addCallback(userLocalCache.getOrFind(target.getUniqueId().toString()), optionalUser -> {
             if (!optionalUser.isPresent()) {
                 translationManager.getMessage("user.not-exists").ifPresent(message -> {

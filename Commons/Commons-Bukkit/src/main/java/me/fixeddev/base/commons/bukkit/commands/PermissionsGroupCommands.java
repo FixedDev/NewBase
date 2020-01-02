@@ -68,7 +68,7 @@ public class PermissionsGroupCommands implements CommandClass {
         return true;
     }
 
-    @ACommand(names = "permission add")
+    @ACommand(names = {"permission-add", "perm-add"})
     public boolean permissionAdd(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, String permission, @Default("false") Boolean denied, @Default("1") Integer weight) {
         FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
             if (group == null) {
@@ -98,7 +98,7 @@ public class PermissionsGroupCommands implements CommandClass {
         return true;
     }
 
-    @ACommand(names = "permission remove")
+    @ACommand(names = {"remove-permission", "remove-perm"})
     public boolean permissionRemove(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, String permission) {
         FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
             if (group == null) {
