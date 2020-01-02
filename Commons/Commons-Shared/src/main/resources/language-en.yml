@@ -9,6 +9,8 @@ commons:
       already-exists: "&cA group with name {group} already exists!"
       not-exists: "&cA group with name {group} doesn't exists!"
       created: "&aCreated group with name {group} and weight {weight}."
-      added-permission: "&aAdded permission {permission} to group {group} with denied value '{denied}' and weight {weight}"
+      added-permission: "&aAdded permission {permission} to group {group} with denied value '{denied}' and weight {weight}."
+      removed-permission: "&aRemoved permission {permission} from the group {group}."
+      failed-remove-permission: "&cFailed to remove permission {permission} from the group {group} because the group doesn't has that permission!"
     user:
       set-group: "&e{player}'s group is now&8:&6 '{group}'."
