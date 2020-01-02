@@ -61,6 +61,10 @@ public class CustomPermissible extends PermissibleBase {
 
     @Override
     public boolean hasPermission(String inName) {
+        if(inName.isEmpty()){
+            return true;
+        }
+
         Tristate permissionValue = hasPermissionInternal(inName);
 
         if (isOp() && permissionValue != Tristate.FALSE) {
