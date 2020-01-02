@@ -112,15 +112,15 @@ public class CustomPermissible extends PermissibleBase {
 
             // The permissions data isn't calculated yet
             if (!optionalPermissionsData.isPresent()) {
+                // Calculate the data and cache it
+                onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
                 // Check if we have any cached data
                 if (cachedData == null) {
                     return new HashSet<>();
                 }
 
-                // We have cached data, use that
+                // We have cached data, use that for the moment
                 optionalPermissionsData = Optional.of(cachedData);
-                // Recalculate the data and change the cached data
-                onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
             }
 
             PermissionsData permissionsData = optionalPermissionsData.get();
@@ -173,15 +173,16 @@ public class CustomPermissible extends PermissibleBase {
 
         // The permissions data isn't calculated yet
         if (!optionalPermissionsData.isPresent()) {
+            // Calculate the data and cache it
+            onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
+
             // Check if we have any cached data
             if (cachedData == null) {
                 return Tristate.UNDEFINED;
             }
 
-            // We have cached data, use that
+            // We have cached data, use that for the moment
             optionalPermissionsData = Optional.of(cachedData);
-            // Recalculate the data and change the cached data
-            onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
         }
 
         PermissionsData permissionsData = optionalPermissionsData.get();
