@@ -68,6 +68,28 @@ public class PermissionsGroupCommands implements CommandClass {
         return true;
     }
 
+    @ACommand(names = "delete")
+    public boolean deleteGroup(@Injected(true) @Named("SENDER") CommandSender sender, String groupName) {
+        FutureUtils.addCallback(groupManager.deleteGroupByName(groupName), group -> {
+            if (group == null) {
+                translationManager.getMessage("commons.permissions.groups.not-exists").ifPresent(message -> {
+                    message.setVariableValue("group", groupName);
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
+                });
+                return;
+            }
+
+            translationManager.getMessage("commons.permissions.groups.deleted").ifPresent(message -> {
+                message.setVariableValue("group", groupName);
+
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
+            });
+        });
+
+        return true;
+    }
+
     @ACommand(names = {"permission-add", "perm-add"})
     public boolean permissionAdd(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, String permission, @Default("false") Boolean denied, @Default("1") Integer weight) {
         FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
