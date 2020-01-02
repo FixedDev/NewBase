@@ -11,6 +11,7 @@ import me.fixeddev.ebcm.CommandManager;
 import me.fixeddev.ebcm.SimpleCommandManager;
 import me.fixeddev.ebcm.bukkit.BukkitAuthorizer;
 import me.fixeddev.ebcm.bukkit.BukkitCommandManager;
+import me.fixeddev.ebcm.bukkit.parameter.provider.BukkitModule;
 import me.fixeddev.ebcm.parameter.provider.ParameterProviderRegistry;
 import me.fixeddev.ebcm.parametric.ParametricCommandBuilder;
 import me.fixeddev.ebcm.parametric.ReflectionParametricCommandBuilder;
@@ -41,7 +42,10 @@ public class CommonsBukkit extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        CommandManager commandManager = new SimpleCommandManager(new BukkitAuthorizer(), ParameterProviderRegistry.createRegistry());
+        ParameterProviderRegistry registry = ParameterProviderRegistry.createRegistry();
+        registry.installModule(new BukkitModule());
+
+        CommandManager commandManager = new SimpleCommandManager(new BukkitAuthorizer(), registry);
         BukkitCommandManager bukkitCommandManager = new BukkitCommandManager(commandManager, this.getName());
 
         ParametricCommandBuilder commandBuilder = new ReflectionParametricCommandBuilder();
