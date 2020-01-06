@@ -14,11 +14,17 @@ public interface UserManager {
 
     ListenableFuture<Optional<User>> getUserByName(String name);
 
-    default Optional<User> getIfCached(UUID id){
+    default Optional<User> getIfCached(UUID id) {
         return getIfCached(id.toString());
     }
 
     Optional<User> getIfCached(String id);
 
-     void save(User user);
+    default void loadUser(UUID id){
+        loadUser(id);
+    }
+
+    void loadUser(String id);
+
+    void save(User user);
 }

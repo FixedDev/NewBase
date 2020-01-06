@@ -36,6 +36,11 @@ public class UserManagerImpl implements UserManager {
     }
 
     @Override
+    public void loadUser(String id) {
+        localCache.loadIfAbsent(id);
+    }
+
+    @Override
     public void save(User user) {
         objectRepository.save(user);
         localCache.cacheObject(user);
