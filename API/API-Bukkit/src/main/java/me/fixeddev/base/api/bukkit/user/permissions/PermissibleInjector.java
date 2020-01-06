@@ -3,6 +3,7 @@ package me.fixeddev.base.api.bukkit.user.permissions;
 import com.google.inject.Inject;
 import me.fixeddev.base.api.datamanager.ObjectLocalCache;
 import me.fixeddev.base.api.user.User;
+import me.fixeddev.base.api.user.UserManager;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissibleBase;
@@ -17,7 +18,7 @@ public class PermissibleInjector {
     @Inject
     private Plugin plugin;
     @Inject
-    private ObjectLocalCache<User> userRepo;
+    private UserManager userManager;
     @Inject
     private PermissionDataCalculator dataCalculator;
 
@@ -33,7 +34,7 @@ public class PermissibleInjector {
             return;
         }
 
-        CustomPermissible newPermissible = new CustomPermissible(player, player.getUniqueId().toString(), userRepo, dataCalculator, plugin);
+        CustomPermissible newPermissible = new CustomPermissible(player, player.getUniqueId().toString(), userManager, dataCalculator, plugin);
         setPermissible(player, newPermissible);
 
         originalPermissibleMap.put(player.getUniqueId(), oldPermissible);

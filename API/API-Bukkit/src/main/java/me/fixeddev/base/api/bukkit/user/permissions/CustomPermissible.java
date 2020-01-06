@@ -1,10 +1,10 @@
 package me.fixeddev.base.api.bukkit.user.permissions;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import me.fixeddev.base.api.datamanager.ObjectLocalCache;
 import me.fixeddev.base.api.future.FutureUtils;
 import me.fixeddev.base.api.permissions.Tristate;
 import me.fixeddev.base.api.user.User;
+import me.fixeddev.base.api.user.UserManager;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.permissions.PermissionsData;
 import org.bukkit.Bukkit;
@@ -19,11 +19,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class CustomPermissible extends PermissibleBase {
-    private ObjectLocalCache<User> userRepo;
+    private UserManager userManager;
     private PermissionDataCalculator dataCalculator;
     private String userId;
 
@@ -38,13 +37,13 @@ public class CustomPermissible extends PermissibleBase {
     // Only used if the cached user is invalidated, so we don't have cached data on the user
     private PermissionsData cachedData;
 
-    CustomPermissible(Player player, String userId, ObjectLocalCache<User> userRepo, PermissionDataCalculator dataCalculator, Plugin plugin) {
+    CustomPermissible(Player player, String userId, UserManager userManager, PermissionDataCalculator dataCalculator, Plugin plugin) {
         super(player);
 
         this.player = player;
 
         this.userId = userId;
-        this.userRepo = userRepo;
+        this.userManager = userManager;
         this.dataCalculator = dataCalculator;
         pluginAttachment = this.addAttachment(plugin);
 
@@ -61,7 +60,7 @@ public class CustomPermissible extends PermissibleBase {
 
     @Override
     public boolean hasPermission(String inName) {
-        if(inName.isEmpty()){
+        if (inName.isEmpty()) {
             return true;
         }
 
@@ -80,7 +79,7 @@ public class CustomPermissible extends PermissibleBase {
             return;
         }
 
-        ListenableFuture<Optional<User>> futureUser = userRepo.getOrFind(userId);
+        ListenableFuture<Optional<User>> futureUser = userManager.getUserById(userId);
 
         FutureUtils.addCallback(futureUser, optional ->
                 optional.ifPresent(user -> {
@@ -90,56 +89,43 @@ public class CustomPermissible extends PermissibleBase {
 
     @Override
     public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-        ListenableFuture<Optional<User>> futureUser = userRepo.getOrFind(userId);
+        Optional<User> cachedUser = userManager.getIfCached(userId);
 
         // The user isn't cached, we can't stop all the server just to load an user
-        // So, we return false, the user is not loaded yet
-        if (!futureUser.isDone() || futureUser.isCancelled()) {
+        // So, we return UNDEFINED, the user is not loaded yet
+        if (!cachedUser.isPresent()) {
+            userManager.loadUser(userId);
+
             return new HashSet<>();
         }
 
-        try {
-            Optional<User> optionalUser = futureUser.get();
+        User user = cachedUser.get();
 
-            // The user doesn't exist, so that means that it doesn't has any permission
-            if (!optionalUser.isPresent()) {
+        Optional<PermissionsData> optionalPermissionsData = user.getOrInvalidatePermissionData();
+
+        // The permissions data isn't calculated yet
+        if (!optionalPermissionsData.isPresent()) {
+            // Calculate the data and cache it
+            onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
+            // Check if we have any cached data
+            if (cachedData == null) {
                 return new HashSet<>();
             }
 
-            User user = optionalUser.get();
-
-            Optional<PermissionsData> optionalPermissionsData = user.getOrInvalidatePermissionData();
-
-            // The permissions data isn't calculated yet
-            if (!optionalPermissionsData.isPresent()) {
-                // Calculate the data and cache it
-                onPermissionCalculate(user.calculatePermissionsData(dataCalculator));
-                // Check if we have any cached data
-                if (cachedData == null) {
-                    return new HashSet<>();
-                }
-
-                // We have cached data, use that for the moment
-                optionalPermissionsData = Optional.of(cachedData);
-            }
-
-            PermissionsData permissionsData = optionalPermissionsData.get();
-
-            return permissionsData.getEffectivePermissions(player).stream().map(perm ->
-                    new PermissionAttachmentInfo(this, perm.getName(), pluginAttachment, !perm.isDenied())
-            ).collect(Collectors.toSet());
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            // We have cached data, use that for the moment
+            optionalPermissionsData = Optional.of(cachedData);
         }
 
-        return new HashSet<>();
+        PermissionsData permissionsData = optionalPermissionsData.get();
+
+        return permissionsData.getEffectivePermissions(player).stream().map(perm ->
+                new PermissionAttachmentInfo(this, perm.getName(), pluginAttachment, !perm.isDenied())
+        ).collect(Collectors.toSet());
     }
 
     // This is there because the default bukkit method doesn't work with the override of isPermissionSet
     // That I did
-    private boolean bukkitHasPermission(String inName){
+    private boolean bukkitHasPermission(String inName) {
         if (inName == null) {
             throw new IllegalArgumentException("Permission name cannot be null");
         } else {
@@ -157,12 +143,12 @@ public class CustomPermissible extends PermissibleBase {
     }
 
     private Tristate hasPermissionInternal(String permission) {
-        Optional<User> cachedUser = userRepo.getIfCached(userId);
+        Optional<User> cachedUser = userManager.getIfCached(userId);
 
         // The user isn't cached, we can't stop all the server just to load an user
         // So, we return UNDEFINED, the user is not loaded yet
         if (!cachedUser.isPresent()) {
-            userRepo.loadIfAbsent(userId);
+            userManager.loadUser(userId);
 
             return Tristate.UNDEFINED;
         }
