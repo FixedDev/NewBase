@@ -11,5 +11,9 @@ public class UserModule extends ProtectedModule {
 
         DataManagerBinder binder = DataManagerBinder.createBinder(binder(), User.class);
         binder.bind().expose();
+
+        bind(UserManager.class).to(UserManagerImpl.class);
+        expose(UserManager.class);
+
     }
 }
