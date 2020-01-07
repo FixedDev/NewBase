@@ -1,10 +1,9 @@
 package me.fixeddev.base.commons.bukkit.commands;
 
 import com.google.inject.Inject;
-import me.fixeddev.base.api.datamanager.ObjectLocalCache;
-import me.fixeddev.base.api.datamanager.ObjectRepository;
 import me.fixeddev.base.api.permissions.group.GroupManager;
 import me.fixeddev.base.api.user.User;
+import me.fixeddev.base.api.user.UserManager;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.commons.translations.TranslationManager;
 import me.fixeddev.ebcm.parametric.CommandClass;
@@ -22,9 +21,7 @@ public class PermissionsUserCommands implements CommandClass {
     @Inject
     private PermissionDataCalculator dataCalculator;
     @Inject
-    private ObjectLocalCache<User> userLocalCache;
-    @Inject
-    private ObjectRepository<User> userObjectRepository;
+    private UserManager userLocalCache;
 
     @Inject
     private GroupManager groupManager;
@@ -34,7 +31,7 @@ public class PermissionsUserCommands implements CommandClass {
 
     @ACommand(names = "grant")
     public boolean grantCommand(@Injected(true) @Named("SENDER") CommandSender sender, String rank, OfflinePlayer target) {
-        addCallback(userLocalCache.getOrFind(target.getUniqueId().toString()), optionalUser -> {
+        addCallback(userLocalCache.getUserById(target.getUniqueId().toString()), optionalUser -> {
             if (!optionalUser.isPresent()) {
                 translationManager.getMessage("user.not-exists").ifPresent(message -> {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
@@ -57,6 +54,7 @@ public class PermissionsUserCommands implements CommandClass {
                 }
 
                 user.setPrimaryGroup(group.getName());
+                user.calculatePermissionsData(dataCalculator);
 
                 translationManager.getMessage("commons.permissions.user.set-group").ifPresent(message -> {
                     message.setVariableValue("group", rank);
@@ -65,8 +63,7 @@ public class PermissionsUserCommands implements CommandClass {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
                 });
 
-                userLocalCache.cacheObject(user);
-                userObjectRepository.save(user);
+                userLocalCache.save(user);
             });
         });
         return true;

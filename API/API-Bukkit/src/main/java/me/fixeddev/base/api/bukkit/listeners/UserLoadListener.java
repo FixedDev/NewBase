@@ -5,6 +5,7 @@ import me.fixeddev.base.api.datamanager.ObjectLocalCache;
 import me.fixeddev.base.api.datamanager.ObjectRepository;
 import me.fixeddev.base.api.datamanager.RedisCache;
 import me.fixeddev.base.api.permissions.group.GroupManager;
+import me.fixeddev.base.api.user.UserManager;
 import me.fixeddev.base.api.user.permissions.PermissionDataCalculator;
 import me.fixeddev.base.api.user.BaseUser;
 import me.fixeddev.base.api.user.User;
@@ -22,11 +23,7 @@ import java.util.UUID;
 public class UserLoadListener implements Listener {
 
     @Inject
-    private ObjectLocalCache<User> userLocalCache;
-    @Inject
-    private RedisCache<User> userRedisCache;
-    @Inject
-    private ObjectRepository<User> userObjectRepository;
+    private UserManager userLocalCache;
 
     @Inject
     private PermissionDataCalculator calculator;
@@ -38,7 +35,7 @@ public class UserLoadListener implements Listener {
         boolean shouldSave = false;
 
         // Load the user into the local cache
-        userLocalCache.loadIfAbsent(id);
+        userLocalCache.loadUser(id);
         // Check if the user is loaded(it should be, is loaded in the same thread)
         Optional<User> user = userLocalCache.getIfCached(id);
 
@@ -64,11 +61,7 @@ public class UserLoadListener implements Listener {
 
         // The user should be saved, so, save it, and insert it into the cache
         if (shouldSave) {
-            userObjectRepository.save(userObject);
-
-            // Cache it
-            userLocalCache.cacheObject(userObject);
-            userRedisCache.cacheObject(userObject);
+            userLocalCache.save(userObject);
         }
     }
 
