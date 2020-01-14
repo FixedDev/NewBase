@@ -13,6 +13,7 @@ import me.fixeddev.base.api.messager.Channel;
 import me.fixeddev.base.api.messager.ChannelListener;
 import me.fixeddev.base.api.messager.Messager;
 
+import me.fixeddev.base.api.util.TypeLiteralUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
@@ -30,8 +31,9 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
 
     @SuppressWarnings("unchecked")
     @Inject
-    public ObjectLocalCache(ObjectMeta<O> meta, ObjectRepository<O> repository, RedisCache<O> parentCache, Messager messager, ListeningExecutorService executorService) {
+    public ObjectLocalCache(@NotNull ObjectMeta<O> meta, @NotNull ObjectRepository<O> repository, @NotNull RedisCache<O> parentCache, @NotNull Messager messager, @NotNull ListeningExecutorService executorService) {
         objectRepository = repository;
+        this.parentCache = parentCache;
 
         this.executorService = executorService;
 
@@ -49,11 +51,7 @@ public class ObjectLocalCache<O extends SavableObject> implements ObjectCacheLay
                     uncache(o);
                 })
                 .build(s -> {
-                    Optional<O> optionalObject = Optional.empty();
-
-                    if (parentCache != null) {
-                        optionalObject = parentCache.getIfCached(s);
-                    }
+                    Optional<O> optionalObject = parentCache.getIfCached(s);
 
                     O object = optionalObject.orElse(objectRepository.findOne(s).get());
 
