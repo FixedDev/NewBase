@@ -74,13 +74,13 @@
         <dependency>
             <groupId>me.fixeddev</groupId>
             <artifactId>ebcm-universal</artifactId>
-            <version>1.2.2</version>
+            <version>1.5.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>me.fixeddev</groupId>
             <artifactId>ebcm-bukkit</artifactId>
-            <version>1.2.1</version>
+            <version>1.5.0</version>
             <scope>compile</scope>
         </dependency>
 

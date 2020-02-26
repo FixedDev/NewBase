@@ -30,7 +30,7 @@ public class PermissionsUserCommands implements CommandClass {
     private TranslationManager translationManager;
 
     @ACommand(names = "grant")
-    public boolean grantCommand(@Injected(true) @Named("SENDER") CommandSender sender, String rank, OfflinePlayer target) {
+    public boolean grantCommand(@Injected(true) CommandSender sender, String rank, OfflinePlayer target) {
         addCallback(userLocalCache.getUserById(target.getUniqueId().toString()), optionalUser -> {
             if (!optionalUser.isPresent()) {
                 translationManager.getMessage("user.not-exists").ifPresent(message -> {

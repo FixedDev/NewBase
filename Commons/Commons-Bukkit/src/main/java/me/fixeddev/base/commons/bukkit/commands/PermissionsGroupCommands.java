@@ -25,7 +25,7 @@ public class PermissionsGroupCommands implements CommandClass {
     private TranslationManager translationManager;
 
     @ACommand(names = "list")
-    public boolean listGroups(@Injected(true) @Named("SENDER") CommandSender sender) {
+    public boolean listGroups(@Injected(true)CommandSender sender) {
         FutureUtils.addCallback(groupManager.getAllGroups(), groups -> {
             if (groups.isEmpty()) {
                 translationManager.getMessage("commons.permissions.groups.none-available").ifPresent(message ->
@@ -46,7 +46,7 @@ public class PermissionsGroupCommands implements CommandClass {
     }
 
     @ACommand(names = "create")
-    public boolean createGroup(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, @Default("1") Integer weight) {
+    public boolean createGroup(@Injected(true) CommandSender sender, String groupName, @Default("1") Integer weight) {
         FutureUtils.addCallback(groupManager.createGroup(groupName, weight), group -> {
             if (group == null) {
                 translationManager.getMessage("commons.permissions.groups.already-exists").ifPresent(message -> {
@@ -69,7 +69,7 @@ public class PermissionsGroupCommands implements CommandClass {
     }
 
     @ACommand(names = "delete")
-    public boolean deleteGroup(@Injected(true) @Named("SENDER") CommandSender sender, String groupName) {
+    public boolean deleteGroup(@Injected(true) CommandSender sender, String groupName) {
         FutureUtils.addCallback(groupManager.deleteGroupByName(groupName), group -> {
             if (group == null) {
                 translationManager.getMessage("commons.permissions.groups.not-exists").ifPresent(message -> {
@@ -91,7 +91,7 @@ public class PermissionsGroupCommands implements CommandClass {
     }
 
     @ACommand(names = {"permission-add", "perm-add"})
-    public boolean permissionAdd(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, String permission, @Default("false") Boolean denied, @Default("1") Integer weight) {
+    public boolean permissionAdd(@Injected(true) CommandSender sender, String groupName, String permission, @Default("false") Boolean denied, @Default("1") Integer weight) {
         FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
             if (group == null) {
                 translationManager.getMessage("commons.permissions.groups.not-exists").ifPresent(message -> {
@@ -121,7 +121,7 @@ public class PermissionsGroupCommands implements CommandClass {
     }
 
     @ACommand(names = {"remove-permission", "remove-perm"})
-    public boolean permissionRemove(@Injected(true) @Named("SENDER") CommandSender sender, String groupName, String permission) {
+    public boolean permissionRemove(@Injected(true) CommandSender sender, String groupName, String permission) {
         FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
             if (group == null) {
                 translationManager.getMessage("commons.permissions.groups.not-exists").ifPresent(message -> {
