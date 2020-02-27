@@ -10,10 +10,11 @@ import me.fixeddev.ebcm.parametric.CommandClass;
 import me.fixeddev.ebcm.parametric.annotation.ACommand;
 import me.fixeddev.ebcm.parametric.annotation.Default;
 import me.fixeddev.ebcm.parametric.annotation.Injected;
-import me.fixeddev.ebcm.parametric.annotation.Named;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 @ACommand(names = "group")
@@ -25,7 +26,7 @@ public class PermissionsGroupCommands implements CommandClass {
     private TranslationManager translationManager;
 
     @ACommand(names = "list")
-    public boolean listGroups(@Injected(true)CommandSender sender) {
+    public boolean listGroups(@Injected(true) CommandSender sender) {
         FutureUtils.addCallback(groupManager.getAllGroups(), groups -> {
             if (groups.isEmpty()) {
                 translationManager.getMessage("commons.permissions.groups.none-available").ifPresent(message ->
@@ -155,6 +156,56 @@ public class PermissionsGroupCommands implements CommandClass {
 
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
             });
+        });
+
+        return true;
+    }
+
+    @ACommand(names = {"permission-list", "perm-list"})
+    public boolean permissionRemove(@Injected(true) CommandSender sender, String groupName) {
+        FutureUtils.addCallback(groupManager.getGroupByName(groupName), group -> {
+            if (group == null) {
+                translationManager.getMessage("commons.permissions.groups.not-exists").ifPresent(message -> {
+                    message.setVariableValue("group", groupName);
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
+                });
+                return;
+            }
+
+            List<Permission> groupPermissions = group.getEffectivePermissions(sender);
+
+            if (groupPermissions.isEmpty()) {
+                translationManager.getMessage("commons.permissions.groups.list-permission-none").ifPresent(message -> {
+                    message.setVariableValue("group", groupName);
+
+                    sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
+                });
+
+                return;
+            }
+
+
+            StringJoiner permissionList = new StringJoiner("\n");
+
+            group.getEffectivePermissions(sender).forEach(permission -> {
+                translationManager.getMessage("commons.permissions.groups.list-permission-line")
+                        .ifPresent(translatableMessage -> {
+                            translatableMessage.setVariableValue("permission", permission.getName());
+                            translatableMessage.setVariableValue("value", permission.isDenied() ? "&cFalse" : "&aTrue");
+
+                            permissionList.add(translatableMessage.getMessageForLang("en"));
+                        });
+            });
+
+            translationManager.getMessage("commons.permissions.groups.list-permission").ifPresent(message -> {
+                message.setVariableValue("group", groupName);
+                message.setVariableValue("permissions", permissionList.toString());
+
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
+            });
+
+
         });
 
         return true;

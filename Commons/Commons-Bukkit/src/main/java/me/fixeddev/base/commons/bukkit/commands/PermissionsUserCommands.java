@@ -9,7 +9,6 @@ import me.fixeddev.base.commons.translations.TranslationManager;
 import me.fixeddev.ebcm.parametric.CommandClass;
 import me.fixeddev.ebcm.parametric.annotation.ACommand;
 import me.fixeddev.ebcm.parametric.annotation.Injected;
-import me.fixeddev.ebcm.parametric.annotation.Named;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -64,6 +63,29 @@ public class PermissionsUserCommands implements CommandClass {
                 });
 
                 userLocalCache.save(user);
+            });
+        });
+        return true;
+    }
+
+    @ACommand(names = "groupof")
+    public boolean groupOfCommand(@Injected(true) CommandSender sender, OfflinePlayer target) {
+        addCallback(userLocalCache.getUserById(target.getUniqueId().toString()), optionalUser -> {
+            if (!optionalUser.isPresent()) {
+                translationManager.getMessage("user.not-exists").ifPresent(message ->
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")))
+                );
+
+                return;
+            }
+
+            User user = optionalUser.get();
+
+            translationManager.getMessage("commons.user.permissions.group-of").ifPresent(message -> {
+                message.setVariableValue("player", user.getLastName().orElse(target.getName()));
+                message.setVariableValue("group", user.getPrimaryGroup());
+
+                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
             });
         });
         return true;
