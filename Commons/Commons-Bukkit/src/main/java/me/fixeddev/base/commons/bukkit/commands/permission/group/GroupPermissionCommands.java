@@ -143,7 +143,7 @@ public class GroupPermissionCommands implements CommandClass {
 
             translationManager.getMessage("commons.permissions.groups.list-permission").ifPresent(message -> {
                 message.setVariableValue("group", groupName);
-                message.setVariableValue("permissions", permissionList.toString());
+                message.setVariableValue("permissions", "\n" + permissionList.toString());
 
                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message.getMessageForLang("en")));
             });
