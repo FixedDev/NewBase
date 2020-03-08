@@ -13,5 +13,9 @@ commons:
       removed-permission: "&aRemoved permission {permission} from the group {group}."
       failed-remove-permission: "&cFailed to remove permission {permission} from the group {group} because the group doesn't has that permission!"
       deleted: "&aThe group with name {group} was deleted."
+      list-permission: "&eThe permissions for the group {group} are&8: {permissions}"
+      list-permission-none: "&eThe permissions for the group {group} are&8:&7 None"
+      list-permission-line: "&8- &e{permission}: {value}"
     user:
       set-group: "&e{player}'s group is now&8:&6 '{group}'."
+      group-of: "&e{player}'s current group is&8:&a '{group}'."
