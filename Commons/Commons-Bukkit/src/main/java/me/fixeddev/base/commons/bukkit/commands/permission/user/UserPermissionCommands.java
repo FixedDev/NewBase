@@ -116,7 +116,7 @@ public class UserPermissionCommands implements CommandClass {
     }
 
     @ACommand(names = {"list"})
-    public boolean permissionRemove(@Injected(true) CommandSender sender, OfflinePlayer target) {
+    public boolean permissionList(@Injected(true) CommandSender sender, OfflinePlayer target) {
         FutureUtils.addCallback(userManager.getUserById(target.getUniqueId()), optionalUser -> {
             if (!optionalUser.isPresent()) {
                 translationManager.getMessage("user.not-exists").ifPresent(message ->
@@ -128,7 +128,7 @@ public class UserPermissionCommands implements CommandClass {
             User user = optionalUser.get();
 
             FutureUtils.addCallback(user.calculatePermissionsData(dataCalculator), permissionData -> {
-                List<Permission> userPermissions = permissionData.getEffectivePermissions(target);
+                List<Permission> userPermissions = permissionData.getPermissions();
 
                 if (userPermissions.isEmpty()) {
                     translationManager.getMessage("commons.permissions.user.list-permission-none").ifPresent(message -> {

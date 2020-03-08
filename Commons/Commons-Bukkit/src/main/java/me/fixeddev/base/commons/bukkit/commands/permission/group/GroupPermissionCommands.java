@@ -116,7 +116,7 @@ public class GroupPermissionCommands implements CommandClass {
                 return;
             }
 
-            List<Permission> groupPermissions = group.getEffectivePermissions(sender);
+            List<Permission> groupPermissions = group.getPermissions();
 
             if (groupPermissions.isEmpty()) {
                 translationManager.getMessage("commons.permissions.groups.list-permission-none").ifPresent(message -> {
@@ -131,7 +131,7 @@ public class GroupPermissionCommands implements CommandClass {
 
             StringJoiner permissionList = new StringJoiner("\n");
 
-            group.getEffectivePermissions(sender).forEach(permission -> {
+            groupPermissions.forEach(permission -> {
                 translationManager.getMessage("commons.permissions.groups.list-permission-line")
                         .ifPresent(translatableMessage -> {
                             translatableMessage.setVariableValue("permission", permission.getName());
